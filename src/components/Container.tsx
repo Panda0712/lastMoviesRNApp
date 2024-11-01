@@ -25,19 +25,30 @@ type Props = {
   isScroll?: boolean;
   style?: StyleProp<ViewStyle>;
   nestedFlatList?: boolean;
+  fixed?: boolean;
 };
 
 const Container = (props: Props) => {
-  const {children, title, back, right, left, isScroll, style, nestedFlatList} =
-    props;
+  const {
+    children,
+    title,
+    back,
+    right,
+    left,
+    isScroll,
+    style,
+    nestedFlatList,
+    fixed,
+  } = props;
 
   return (
     <SafeAreaView style={[globalStyles.container]}>
+      <StatusBar translucent backgroundColor="transparent" />
       {(back || title || left || right) && (
         <Row
           styles={{
             paddingHorizontal: 16,
-            backgroundColor: colors.red,
+            backgroundColor: fixed ? 'transparent' : colors.red,
             paddingVertical: 16,
             paddingTop:
               Platform.OS === 'android' ? StatusBar.currentHeight : 42,
