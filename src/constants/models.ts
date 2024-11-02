@@ -15,3 +15,15 @@ export interface Movie {
   director: string;
   casts: string;
 }
+
+export interface MoviesInfo {
+  server_name: string;
+  items: Episodes[];
+}
+
+export interface Episodes {
+  name: string;
+  slug: string;
+  embed: string;
+  m3u8: string;
+}

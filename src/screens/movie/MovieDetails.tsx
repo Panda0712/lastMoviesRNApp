@@ -1,26 +1,41 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
-import React, {useState} from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
-import Entypo from 'react-native-vector-icons/Entypo';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {getSpecificMovieDetails} from '../../lib/actions';
+import {MoviesInfo} from '../../constants/models';
 
 const MovieDetails = ({navigation, route}: any) => {
+  const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {movie}: any = route.params;
+  const movieSlug = movie.slug;
+
+  const handleGetMoviesInfo = async (slug: string) => {
+    const data: any = await getSpecificMovieDetails(slug);
+    setMoviesInfo(data);
+  };
 
   const toggleDescription = () => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log(movie);
+  useEffect(() => {
+    if (movieSlug) {
+      handleGetMoviesInfo(movieSlug.toString());
+    }
+  }, [movieSlug]);
+
+  console.log(moviesInfo);
 
   return (
     <Container style={{backgroundColor: colors.black}}>
@@ -105,7 +120,7 @@ const MovieDetails = ({navigation, route}: any) => {
           <Space height={4} />
           <TextComponent
             color={colors.grey3}
-            text={`Đạo diễn: ${movie.director}`}
+            text={`Đạo diễn: ${movie.director ?? 'Chưa có dữ liệu'}`}
           />
           <Space height={4} />
           <TextComponent
@@ -119,10 +134,16 @@ const MovieDetails = ({navigation, route}: any) => {
           />
         </Row>
         <Space height={16} />
-        <Row justifyContent="flex-start">
+        <Row
+          justifyContent="flex-start"
+          styles={{
+            borderBottomColor: colors.black2,
+            paddingBottom: 15,
+            borderBottomWidth: 2,
+          }}>
           <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
             <TouchableOpacity>
-              <AntDesign name="hearto" size={24} color={colors.white} />
+              <AntDesign name="hearto" size={30} color={colors.white} />
             </TouchableOpacity>
             <TextComponent size={sizes.text} color={colors.white} text="0" />
           </Row>
@@ -149,6 +170,65 @@ const MovieDetails = ({navigation, route}: any) => {
             />
           </Row>
         </Row>
+        <Space height={8} />
+        <Row styles={{flexDirection: 'column'}} alignItems="flex-start">
+          <TextComponent
+            font={fontFamilies.firaSemiBold}
+            size={sizes.title}
+            color={colors.white}
+            text="Danh sách tập"
+          />
+          <Space height={2} />
+          <TextComponent
+            size={sizes.title}
+            color={colors.white}
+            text={movie.name}
+          />
+          <Space height={18} />
+          <ScrollView horizontal={true} style={{flexDirection: 'row'}}>
+            {moviesInfo[0]?.items.map((item, index) => (
+              <Row
+                key={index}
+                styles={{
+                  position: 'relative',
+                  flexDirection: 'column',
+                  marginRight: 8,
+                }}
+                alignItems="flex-start">
+                <Row
+                  styles={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    zIndex: 100,
+                    backgroundColor: 'rgba(0,0,0,.4)',
+                    transform: [{translateX: -15}, {translateY: -30}],
+                    width: 30,
+                    height: 30,
+                    borderColor: colors.white,
+                    borderWidth: 1.5,
+                    borderRadius: 100,
+                  }}>
+                  <Entypo
+                    color={colors.white}
+                    name="controller-play"
+                    size={20}
+                  />
+                </Row>
+                <Image
+                  resizeMode="cover"
+                  source={{uri: movie.thumb_url}}
+                  width={50}
+                  height={50}
+                  style={{width: 180, height: 100, objectFit: 'cover'}}
+                />
+                <Space height={4} />
+                <TextComponent color={colors.white} text={`Tập ${index + 1}`} />
+              </Row>
+            ))}
+          </ScrollView>
+        </Row>
+        <Space height={24} />
       </Section>
     </Container>
   );
