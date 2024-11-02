@@ -12,13 +12,28 @@ import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
 import {MoviesInfo} from '../../constants/models';
+import Orientation from 'react-native-orientation-locker';
+import Video from 'react-native-video';
+import WebView from 'react-native-webview';
 
 const MovieDetails = ({navigation, route}: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [movieUrl, setMovieUrl] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const {movie}: any = route.params;
   const movieSlug = movie.slug;
+
+  const handlePlay = (url: string) => {
+    setMovieUrl(url);
+    setIsPlaying(true);
+  };
+
+  const handleEnd = () => {
+    setIsPlaying(false);
+    setMovieUrl('');
+  };
 
   const handleGetMoviesInfo = async (slug: string) => {
     const data: any = await getSpecificMovieDetails(slug);
@@ -35,8 +50,6 @@ const MovieDetails = ({navigation, route}: any) => {
     }
   }, [movieSlug]);
 
-  console.log(moviesInfo);
-
   return (
     <Container style={{backgroundColor: colors.black}}>
       <Section
@@ -52,15 +65,27 @@ const MovieDetails = ({navigation, route}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       </Section>
-      <Row>
-        <Image
-          source={{uri: movie?.poster_url}}
-          resizeMode="cover"
-          width={100}
-          height={100}
-          style={{width: sizes.width, height: 350}}
+      {isPlaying ? (
+        <WebView
+          source={{
+            uri: movieUrl,
+          }}
+          allowsFullscreenVideo={true}
+          mediaPlaybackRequiresUserAction={true}
+          allowsInlineMediaPlayback={true}
+          style={{width: '100%', height: 350}}
         />
-      </Row>
+      ) : (
+        <Row>
+          <Image
+            source={{uri: movie?.poster_url}}
+            resizeMode="cover"
+            width={100}
+            height={100}
+            style={{width: sizes.width, height: 350}}
+          />
+        </Row>
+      )}
       <Space height={16} />
       <Section>
         <Row justifyContent="space-between" alignItems="center">
@@ -70,6 +95,7 @@ const MovieDetails = ({navigation, route}: any) => {
             color={colors.white}
             text={movie.name}
           />
+          <Space width={8} />
           <TouchableOpacity>
             <AntDesign name="hearto" size={sizes.icon} color={colors.white} />
           </TouchableOpacity>
@@ -188,6 +214,7 @@ const MovieDetails = ({navigation, route}: any) => {
           <ScrollView horizontal={true} style={{flexDirection: 'row'}}>
             {moviesInfo[0]?.items.map((item, index) => (
               <Row
+                onPress={() => handlePlay(item.embed)}
                 key={index}
                 styles={{
                   position: 'relative',
@@ -215,6 +242,7 @@ const MovieDetails = ({navigation, route}: any) => {
                     size={20}
                   />
                 </Row>
+
                 <Image
                   resizeMode="cover"
                   source={{uri: movie.thumb_url}}

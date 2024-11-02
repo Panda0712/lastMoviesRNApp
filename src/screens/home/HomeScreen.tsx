@@ -8,25 +8,73 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container} from '../../components';
+import CategoryComponent from '../../components/CategoryComponent';
+import FlatListComponent from '../../components/FlatListComponent';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {Movie} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
-import {getStreamingMovies} from '../../lib/actions';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {
+  getCurrentMovies,
+  getSpecificCategoryMovies,
+  getStreamingMovies,
+} from '../../lib/actions';
 
 const HomeScreen = ({navigation}: any) => {
   const [streamingMovies, setStreamingMovies] = useState<Movie[]>([]);
+  const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
+  const [seriesMovies, setSeriesMovies] = useState<Movie[]>([]);
+  const [cinemaMovies, setCinemaMovies] = useState<Movie[]>([]);
+  const [actionMovies, setActionMovies] = useState<Movie[]>([]);
+  const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
+  const [tvShows, setTVShows] = useState<Movie[]>([]);
 
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
   };
 
+  const getCurrentMoviesHome = async () => {
+    const item: any = await getCurrentMovies();
+    setCurrentMovies(item);
+  };
+
+  const getCurrentSeriesMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('phim-bo');
+    setSeriesMovies(item);
+  };
+
+  const getCurrentCinemaMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('phim-le');
+    setCinemaMovies(item);
+  };
+
+  const getCurrentActionMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('hanh-dong');
+    setActionMovies(item);
+  };
+
+  const getCurrentLoveMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('tinh-cam');
+    setLoveMovies(item);
+  };
+
+  const getCurrentTVShows = async () => {
+    const item: any = await getSpecificCategoryMovies('tv-shows');
+    setTVShows(item);
+  };
+
   useEffect(() => {
     getMovies();
+    getCurrentMoviesHome();
+    getCurrentSeriesMovies();
+    getCurrentCinemaMovies();
+    getCurrentActionMovies();
+    getCurrentLoveMovies();
+    getCurrentTVShows();
   }, []);
 
   return (
@@ -120,6 +168,42 @@ const HomeScreen = ({navigation}: any) => {
           )}
         />
       </View>
+      <Space height={12} />
+      <Section>
+        <CategoryComponent text="Phim đang chiếu" slug="phim-dang-chieu" />
+        <Space height={8} />
+        <FlatListComponent data={currentMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Phim bộ" slug="phim-bo" />
+        <Space height={8} />
+        <FlatListComponent data={seriesMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Phim lẻ" slug="phim-le" />
+        <Space height={8} />
+        <FlatListComponent data={cinemaMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Hành động" slug="hanh-dong" />
+        <Space height={8} />
+        <FlatListComponent data={actionMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Tình cảm" slug="tinh-cam" />
+        <Space height={8} />
+        <FlatListComponent data={loveMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="TV Shows" slug="tv-shows" />
+        <Space height={8} />
+        <FlatListComponent data={tvShows} />
+      </Section>
     </Container>
   );
 };

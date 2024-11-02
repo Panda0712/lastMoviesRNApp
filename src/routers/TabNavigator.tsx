@@ -10,6 +10,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
+import CategoryNavigator from './CategoryNavigator';
+import FavoriteNavigator from './FavoriteNavigator';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -33,15 +35,15 @@ const TabNavigator = () => {
           let icon = <Entypo name="home" color={color} size={size} />;
           let name = 'Trang chủ';
 
-          if (route.name === 'CartTab') {
-            icon = <Ionicons name="cart" color={color} size={size} />;
-            name = 'Giỏ hàng';
+          if (route.name === 'CategoryTab') {
+            icon = <FontAwesome name="film" color={color} size={size} />;
+            name = 'Danh mục';
           } else if (route.name === 'ProfileTab') {
             icon = <FontAwesome name="user" color={color} size={size} />;
             name = 'Tài khoản';
-          } else if (route.name === 'FoodTab') {
-            icon = <Ionicons name="fast-food" color={color} size={size} />;
-            name = 'Thực đơn';
+          } else if (route.name === 'FavoriteTab') {
+            icon = <Ionicons name="heart" color={color} size={size} />;
+            name = 'Yêu thích';
           }
 
           return (
@@ -53,6 +55,8 @@ const TabNavigator = () => {
         },
       })}>
       <Tab.Screen name="HomeTab" component={HomeNavigator} />
+      <Tab.Screen name="CategoryTab" component={CategoryNavigator} />
+      <Tab.Screen name="FavoriteTab" component={FavoriteNavigator} />
       <Tab.Screen name="ProfileTab" component={ProfileNavigator} />
     </Tab.Navigator>
   );
