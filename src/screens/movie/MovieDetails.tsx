@@ -1,20 +1,18 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import WebView from 'react-native-webview';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
+import {MoviesInfo} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
-import {MoviesInfo} from '../../constants/models';
-import Orientation from 'react-native-orientation-locker';
-import Video from 'react-native-video';
-import WebView from 'react-native-webview';
 
 const MovieDetails = ({navigation, route}: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -24,15 +22,16 @@ const MovieDetails = ({navigation, route}: any) => {
 
   const {movie}: any = route.params;
   const movieSlug = movie.slug;
+  const listEpisodes = moviesInfo[0]?.items;
 
   const handlePlay = (url: string) => {
     setMovieUrl(url);
     setIsPlaying(true);
   };
 
-  const handleEnd = () => {
-    setIsPlaying(false);
-    setMovieUrl('');
+  const handleWatchNow = (url: string) => {
+    setMovieUrl(url);
+    setIsPlaying(true);
   };
 
   const handleGetMoviesInfo = async (slug: string) => {
@@ -130,12 +129,16 @@ const MovieDetails = ({navigation, route}: any) => {
         </Row>
         <Space height={16} />
         <Button
+          textStyleProps={{
+            fontFamily: fontFamilies.firaSemiBold,
+            marginBottom: 2,
+          }}
           radius={4}
           icon={
             <Entypo color={colors.black} name="controller-play" size={24} />
           }
           title="Xem ngay"
-          onPress={() => {}}
+          onPress={() => handleWatchNow(listEpisodes[0].embed)}
         />
 
         <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>

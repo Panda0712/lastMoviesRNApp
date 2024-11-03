@@ -48,10 +48,9 @@ const Container = (props: Props) => {
         <Row
           styles={{
             paddingHorizontal: 16,
-            backgroundColor: fixed ? 'transparent' : colors.red,
+            backgroundColor: fixed ? colors.black : colors.red,
             paddingVertical: 16,
-            paddingTop:
-              Platform.OS === 'android' ? StatusBar.currentHeight : 42,
+            paddingTop: 44,
           }}>
           {back && back}
           {left && !back && <></>}
@@ -66,6 +65,7 @@ const Container = (props: Props) => {
                 font={fontFamilies.firaBold}
                 color={colors.white}
                 text={title}
+                styles={{textAlign: 'center'}}
               />
             )}
           </View>

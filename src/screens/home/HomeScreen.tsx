@@ -1,16 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
+import Swiper from 'react-native-swiper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Container} from '../../components';
+import {Container, TextComponent} from '../../components';
 import CategoryComponent from '../../components/CategoryComponent';
 import FlatListComponent from '../../components/FlatListComponent';
 import {colors} from '../../constants/colors';
@@ -101,12 +97,9 @@ const HomeScreen = ({navigation}: any) => {
         </Row>
       </Section>
       <View>
-        <FlatList
-          data={streamingMovies}
-          horizontal
-          keyExtractor={item => item.name}
-          renderItem={({item}) => (
-            <View style={{width: sizes.width}}>
+        <Swiper showsPagination={false} style={{height: 380}}>
+          {streamingMovies.map((item, index) => (
+            <View key={index} style={{width: sizes.width}}>
               <ImageBackground
                 source={{uri: item.poster_url}}
                 width={50}
@@ -128,45 +121,61 @@ const HomeScreen = ({navigation}: any) => {
                     styles={{
                       width: '100%',
                       height: 80,
+                      marginBottom: 4,
                     }}
                     alignItems="center">
                     <TouchableOpacity>
-                      <AntDesign
-                        style={{marginBottom: 10}}
-                        name="hearto"
-                        size={sizes.icon}
-                        color={colors.white}
-                      />
+                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                        <AntDesign
+                          name="hearto"
+                          size={sizes.icon}
+                          color={colors.white}
+                        />
+                        <TextComponent color={colors.white} text="Yêu thích" />
+                      </Row>
                     </TouchableOpacity>
                     <Space width={28} />
                     <Button
-                      radius={8}
-                      styles={{paddingVertical: 4, paddingHorizontal: 16}}
+                      icon={
+                        <Entypo
+                          color={colors.black}
+                          name="controller-play"
+                          size={20}
+                        />
+                      }
+                      radius={6}
+                      styles={{paddingVertical: 2, paddingHorizontal: 16}}
                       textStyleProps={{
                         fontFamily: fontFamilies.firaSemiBold,
-                        fontSize: sizes.desc,
+                        fontSize: sizes.text,
+                        marginBottom: 3,
                       }}
-                      color={colors.red}
+                      color={colors.white}
                       title="Xem ngay"
                       onPress={() =>
                         navigation.navigate('MovieDetails', {movie: item})
                       }
                     />
                     <Space width={28} />
-                    <TouchableOpacity>
-                      <AntDesign
-                        style={{marginBottom: 10}}
-                        name="download"
-                        size={sizes.icon}
-                        color={colors.white}
-                      />
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('MovieDetails', {movie: item})
+                      }>
+                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                        <AntDesign
+                          name="infocirlceo"
+                          size={sizes.icon}
+                          color={colors.white}
+                        />
+                        <TextComponent color={colors.white} text="Chi tiết" />
+                      </Row>
                     </TouchableOpacity>
                   </Row>
                 </Row>
               </ImageBackground>
             </View>
-          )}
-        />
+          ))}
+        </Swiper>
       </View>
       <Space height={12} />
       <Section>
