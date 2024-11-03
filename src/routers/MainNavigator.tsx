@@ -1,7 +1,14 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import TabNavigator from './TabNavigator';
-import {CategoryScreen, MovieDetails, SearchScreen} from '../screens';
+import {
+  AboutScreen,
+  CategoryScreen,
+  ContactScreen,
+  MovieDetails,
+  SearchScreen,
+  UserScreen,
+} from '../screens';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -12,6 +19,9 @@ const MainNavigator = () => {
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="MovieDetails" component={MovieDetails} />
       <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
+      <Stack.Screen name="ContactScreen" component={ContactScreen} />
+      <Stack.Screen name="AboutScreen" component={AboutScreen} />
+      <Stack.Screen name="UserScreen" component={UserScreen} />
     </Stack.Navigator>
   );
 };
