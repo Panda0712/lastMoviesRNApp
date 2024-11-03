@@ -16,7 +16,7 @@ export type RootStackParamList = {
   };
 };
 
-const CategoryComponent = ({text, slug}: any) => {
+const CategoryComponent = ({text, slug, showArrow}: any) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -36,12 +36,14 @@ const CategoryComponent = ({text, slug}: any) => {
             slug: slug,
           })
         }>
-        <TextComponent
-          size={30}
-          styles={{textTransform: 'uppercase'}}
-          color={colors.white}
-          text=">"
-        />
+        {!showArrow && (
+          <TextComponent
+            size={30}
+            styles={{textTransform: 'uppercase'}}
+            color={colors.white}
+            text=">"
+          />
+        )}
       </TouchableOpacity>
     </Row>
   );

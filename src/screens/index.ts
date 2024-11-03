@@ -2,6 +2,7 @@ import AboutScreen from './about/AboutScreen';
 import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import Swiper from './auth/Swiper';
+import CategoryDetails from './category/CategoryDetails';
 import CategoryScreen from './category/CategoryScreen';
 import CategoryFilmScreen from './categoryFilm/CategoryFilmScreen';
 import ContactScreen from './contact/ContactScreen';
@@ -26,4 +27,5 @@ export {
   ContactScreen,
   AboutScreen,
   UserScreen,
+  CategoryDetails,
 };

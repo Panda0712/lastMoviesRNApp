@@ -17,6 +17,27 @@ export const getPaginationMovies = async (slug: string, page: number) => {
   }
 };
 
+export const getCategoryFilmMovies = async (
+  category: string,
+  slug: string,
+  page: number,
+) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/${category}/${slug}?page=${page}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log(error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};
+
 export const getStreamingMovies = async () => {
   try {
     const response = await fetch(

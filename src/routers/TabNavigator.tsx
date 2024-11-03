@@ -22,9 +22,6 @@ const TabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: colors.white,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
           height: 70,
           justifyContent: 'center',
           alignItems: 'center',
