@@ -18,12 +18,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
+import CategoryComponent from '../../components/CategoryComponent';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {Movie} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getCategoryFilmMovies} from '../../lib/actions';
-import CategoryComponent from '../../components/CategoryComponent';
 
 const {width} = Dimensions.get('window');
 const COLUMN_COUNT = 3;
@@ -37,7 +37,6 @@ const CategoryDetails = ({navigation, route}: any) => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
   const {category, slug, text} = route.params;
 
   const handleGetMovies = async () => {
@@ -50,7 +49,6 @@ const CategoryDetails = ({navigation, route}: any) => {
       setLoading(true);
       const response = await getCategoryFilmMovies(category, slug, page);
       const moviesApi = Array.isArray(response[0]) ? response[0] : response;
-
       if (moviesApi?.length > 0) {
         setAllMovies(prev =>
           shouldAppend ? [...prev, ...moviesApi] : moviesApi,
@@ -189,7 +187,9 @@ const CategoryDetails = ({navigation, route}: any) => {
         </Swiper>
       </View>
       <Space height={16} />
-      <CategoryComponent text={text} slug={slug} showArrow />
+      <Section>
+        <CategoryComponent text={text} slug={slug} showArrow />
+      </Section>
       <Space height={8} />
     </>
   );
@@ -239,7 +239,6 @@ const CategoryDetails = ({navigation, route}: any) => {
     </Container>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.black,
@@ -258,10 +257,10 @@ const styles = StyleSheet.create({
   movieImage: {
     width: ITEM_WIDTH,
     height: ITEM_HEIGHT,
+    marginHorizontal: 4,
   },
   footer: {
     paddingVertical: 20,
   },
 });
-
 export default CategoryDetails;
