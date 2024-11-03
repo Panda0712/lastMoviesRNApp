@@ -1,5 +1,22 @@
 import Toast from 'react-native-toast-message';
 
+export const getPaginationMovies = async (slug: string, page: number) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/danh-sach/${slug}?page=${page}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log(error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};
+
 export const getStreamingMovies = async () => {
   try {
     const response = await fetch(

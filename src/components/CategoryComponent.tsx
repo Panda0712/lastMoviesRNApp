@@ -11,7 +11,8 @@ import TextComponent from './TextComponent';
 
 export type RootStackParamList = {
   CategoryScreen: {
-    category: string;
+    text: string;
+    slug: string;
   };
 };
 
@@ -31,7 +32,8 @@ const CategoryComponent = ({text, slug}: any) => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('CategoryScreen', {
-            category: slug,
+            text: text,
+            slug: slug,
           })
         }>
         <TextComponent
