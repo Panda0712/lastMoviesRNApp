@@ -103,3 +103,20 @@ export const getSpecificMovieDetails = async (slug: string) => {
     });
   }
 };
+
+export const getSearchMovies = async (keyword: string) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/search?keyword=${keyword}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log('Lỗi tải dữ liệu tìm kiếm: ', error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};

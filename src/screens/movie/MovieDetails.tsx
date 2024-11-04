@@ -58,10 +58,10 @@ const MovieDetails = ({navigation, route}: any) => {
           paddingHorizontal: 8,
           left: 0,
           right: 0,
-          zIndex: 100,
+          zIndex: 1000,
         }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={colors.white} />
+          <Ionicons name="chevron-back" size={36} color={colors.white} />
         </TouchableOpacity>
       </Section>
       {isPlaying ? (
