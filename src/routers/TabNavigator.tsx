@@ -1,15 +1,15 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import HomeNavigator from './HomeNavigator';
 import ProfileNavigator from './ProfileNavigator';
-import {colors} from '../constants/colors';
+import { colors } from '../constants/colors';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {View} from 'react-native';
-import {TextComponent} from '../components';
+import { View } from 'react-native';
+import { TextComponent } from '../components';
 import CategoryNavigator from './CategoryNavigator';
 import FavoriteNavigator from './FavoriteNavigator';
 
@@ -18,18 +18,16 @@ const TabNavigator = () => {
 
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
+      screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: colors.white,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
           height: 70,
           justifyContent: 'center',
           alignItems: 'center',
         },
-        tabBarIcon: ({focused, color, size}) => {
+        tabBarIcon: ({ focused, color, size }) => {
           color = focused ? colors.black : colors.black4;
           size = 24;
           let icon = <Entypo name="home" color={color} size={size} />;
@@ -47,7 +45,7 @@ const TabNavigator = () => {
           }
 
           return (
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               {icon}
               <TextComponent text={name} />
             </View>
