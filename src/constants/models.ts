@@ -27,3 +27,14 @@ export interface Episodes {
   embed: string;
   m3u8: string;
 }
+
+export interface Comments {
+  user: string;
+  userComments: string;
+}
+
+export interface Reviews {
+  name: string;
+  comments: Comments[];
+  timestamp: string;
+}

@@ -1,26 +1,34 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
+import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, TouchableOpacity} from 'react-native';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import WebView from 'react-native-webview';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import {MoviesInfo} from '../../constants/models';
+import {MoviesInfo, Reviews} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
+import {parseTime} from '../../utils/helpers';
 
 const MovieDetails = ({navigation, route}: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [movieUrl, setMovieUrl] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [commentValue, setCommentValue] = useState('');
+  const [reviews, setReviews] = useState<Reviews[]>([]);
 
   const {movie}: any = route.params;
+  const user = auth().currentUser;
   const movieSlug = movie.slug;
   const listEpisodes = moviesInfo[0]?.items;
 
@@ -43,11 +51,63 @@ const MovieDetails = ({navigation, route}: any) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleGetComments = () => {
+    firestore()
+      .collection('reviews')
+      .where('name', '==', movieSlug)
+      .onSnapshot((snapshot: any) => {
+        const items = snapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReviews(items);
+      });
+  };
+
+  const handlePostComments = async () => {
+    if (!commentValue) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Vui lòng nhập bình luận của bạn',
+      });
+      return;
+    }
+
+    const commentData = {
+      user: user?.displayName,
+      userComments: commentValue,
+    };
+
+    if (reviews[0]?.id && reviews?.length > 0) {
+      await firestore()
+        .doc(`reviews/${reviews[0].id}`)
+        .update({
+          comments: firestore.FieldValue.arrayUnion(commentData),
+        });
+    } else {
+      await firestore()
+        .collection('reviews')
+        .add({
+          name: movieSlug,
+          comments: [commentData],
+          timestamp: new Date(),
+        });
+    }
+    setCommentValue('');
+  };
+
+  useEffect(() => {
+    handleGetComments();
+  }, []);
+
   useEffect(() => {
     if (movieSlug) {
       handleGetMoviesInfo(movieSlug.toString());
     }
   }, [movieSlug]);
+
+  console.log(reviews);
 
   return (
     <Container style={{backgroundColor: colors.black}}>
@@ -163,7 +223,7 @@ const MovieDetails = ({navigation, route}: any) => {
         <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
           <TextComponent
             color={colors.grey3}
-            text={`Diễn viên: ${movie.casts}`}
+            text={`Diễn viên: ${movie.casts ?? 'Chưa có dữ liệu'}`}
           />
           <Space height={4} />
           <TextComponent
@@ -173,12 +233,12 @@ const MovieDetails = ({navigation, route}: any) => {
           <Space height={4} />
           <TextComponent
             color={colors.grey3}
-            text={`Thời lượng: ${movie.time}`}
+            text={`Thời lượng: ${movie.time ?? 'Chưa có dữ liệu'}`}
           />
           <Space height={4} />
           <TextComponent
             color={colors.grey3}
-            text={`Số tập: ${movie.total_episodes}`}
+            text={`Số tập: ${movie.total_episodes ?? 'Chưa có dữ liệu'}`}
           />
         </Row>
         <Space height={16} />
@@ -219,7 +279,14 @@ const MovieDetails = ({navigation, route}: any) => {
           </Row>
         </Row>
         <Space height={8} />
-        <Row styles={{flexDirection: 'column'}} alignItems="flex-start">
+        <Row
+          styles={{
+            flexDirection: 'column',
+            borderBottomColor: colors.black2,
+            borderBottomWidth: 2,
+            paddingBottom: 15,
+          }}
+          alignItems="flex-start">
           <TextComponent
             font={fontFamilies.firaSemiBold}
             size={sizes.title}
@@ -278,7 +345,101 @@ const MovieDetails = ({navigation, route}: any) => {
             ))}
           </ScrollView>
         </Row>
-        <Space height={24} />
+        <Space height={8} />
+
+        <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
+          <TextComponent
+            text="Bình luận"
+            font={fontFamilies.firaSemiBold}
+            size={sizes.title}
+            color={colors.white}
+          />
+          <Space height={12} />
+          <Row justifyContent="flex-start" styles={{width: '100%'}}>
+            <Input
+              bordered={false}
+              color="transparent"
+              styles={{
+                width: sizes.width - 40,
+                paddingHorizontal: 0,
+              }}
+              value={commentValue}
+              onChange={setCommentValue}
+              placeholderColor={colors.white}
+              inputStyles={{color: colors.white}}
+              placeholder="Nhập bình luận"
+              prefix={
+                <FontAwesome6
+                  name="circle-user"
+                  color={colors.white}
+                  size={30}
+                />
+              }
+              affix={
+                <TouchableOpacity onPress={handlePostComments}>
+                  <Ionicons name="send" color={colors.white} size={24} />
+                </TouchableOpacity>
+              }
+            />
+          </Row>
+          <Space height={4} />
+          {reviews?.length > 0 ? (
+            <View>
+              <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
+                {reviews[0]?.comments.map((item, index) => (
+                  <Row
+                    styles={{
+                      position: 'relative',
+                      marginBottom: 10,
+                      width: sizes.width - 50,
+                    }}
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                    key={index}>
+                    <Row alignItems="flex-start">
+                      <FontAwesome6
+                        name="circle-user"
+                        color={colors.white}
+                        size={30}
+                      />
+                      <Space width={12} />
+                      <Row
+                        alignItems="flex-start"
+                        styles={{flexDirection: 'column'}}>
+                        <TextComponent
+                          font={fontFamilies.firaMedium}
+                          color={colors.white}
+                          text={item.user}
+                        />
+                        <TextComponent
+                          color={colors.white}
+                          text={item.userComments}
+                        />
+                      </Row>
+                    </Row>
+                    <TextComponent
+                      styles={{
+                        textAlign: 'right',
+                      }}
+                      color={colors.grey}
+                      text={parseTime(reviews[0]?.timestamp)}
+                    />
+                  </Row>
+                ))}
+              </Row>
+            </View>
+          ) : (
+            <Section>
+              <Row>
+                <TextComponent
+                  font={fontFamilies.firaMedium}
+                  color={colors.white}
+                  text="Chưa có bình luận nào"
+                />
+              </Row>
+            </Section>
+          )}
+        </Row>
       </Section>
     </Container>
   );
