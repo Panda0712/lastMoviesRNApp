@@ -11,11 +11,12 @@ import TextComponent from './TextComponent';
 
 export type RootStackParamList = {
   CategoryScreen: {
-    category: string;
+    text: string;
+    slug: string;
   };
 };
 
-const CategoryComponent = ({text, slug}: any) => {
+const CategoryComponent = ({text, slug, showArrow}: any) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -31,15 +32,18 @@ const CategoryComponent = ({text, slug}: any) => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('CategoryScreen', {
-            category: slug,
+            text: text,
+            slug: slug,
           })
         }>
-        <TextComponent
-          size={30}
-          styles={{textTransform: 'uppercase'}}
-          color={colors.white}
-          text=">"
-        />
+        {!showArrow && (
+          <TextComponent
+            size={30}
+            styles={{textTransform: 'uppercase'}}
+            color={colors.white}
+            text=">"
+          />
+        )}
       </TouchableOpacity>
     </Row>
   );

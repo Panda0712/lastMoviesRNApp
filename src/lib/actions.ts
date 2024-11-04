@@ -1,5 +1,43 @@
 import Toast from 'react-native-toast-message';
 
+export const getPaginationMovies = async (slug: string, page: number) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/danh-sach/${slug}?page=${page}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log(error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};
+
+export const getCategoryFilmMovies = async (
+  category: string,
+  slug: string,
+  page: number,
+) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/${category}/${slug}?page=${page}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log(error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};
+
 export const getStreamingMovies = async () => {
   try {
     const response = await fetch(
@@ -58,6 +96,23 @@ export const getSpecificMovieDetails = async (slug: string) => {
     return data.movie.episodes;
   } catch (error: any) {
     console.log('Lỗi tải dữ liệu tập phim: ', error);
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: error.message,
+    });
+  }
+};
+
+export const getSearchMovies = async (keyword: string) => {
+  try {
+    const response = await fetch(
+      `https://phim.nguonc.com/api/films/search?keyword=${keyword}`,
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (error: any) {
+    console.log('Lỗi tải dữ liệu tìm kiếm: ', error);
     Toast.show({
       type: 'error',
       text1: 'Thông báo',

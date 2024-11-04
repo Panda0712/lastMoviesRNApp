@@ -27,6 +27,7 @@ const HomeScreen = ({navigation}: any) => {
   const [actionMovies, setActionMovies] = useState<Movie[]>([]);
   const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
   const [tvShows, setTVShows] = useState<Movie[]>([]);
+  const [sexMovies, setSexMovies] = useState<Movie[]>([]);
 
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
@@ -63,6 +64,11 @@ const HomeScreen = ({navigation}: any) => {
     setTVShows(item);
   };
 
+  const getCurrentSexMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('phim-18');
+    setSexMovies(item);
+  };
+
   useEffect(() => {
     getMovies();
     getCurrentMoviesHome();
@@ -71,6 +77,7 @@ const HomeScreen = ({navigation}: any) => {
     getCurrentActionMovies();
     getCurrentLoveMovies();
     getCurrentTVShows();
+    getCurrentSexMovies();
   }, []);
 
   return (
@@ -212,6 +219,12 @@ const HomeScreen = ({navigation}: any) => {
         <CategoryComponent text="TV Shows" slug="tv-shows" />
         <Space height={8} />
         <FlatListComponent data={tvShows} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Phim 18+" slug="phim-18" />
+        <Space height={8} />
+        <FlatListComponent data={sexMovies} />
       </Section>
     </Container>
   );

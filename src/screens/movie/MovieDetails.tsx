@@ -58,21 +58,40 @@ const MovieDetails = ({navigation, route}: any) => {
           paddingHorizontal: 8,
           left: 0,
           right: 0,
-          zIndex: 100,
+          zIndex: 1000,
         }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={colors.white} />
+          <Ionicons name="chevron-back" size={36} color={colors.white} />
         </TouchableOpacity>
       </Section>
       {isPlaying ? (
         <WebView
           source={{
             uri: movieUrl,
+            headers: {
+              'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            },
           }}
-          allowsFullscreenVideo={true}
-          mediaPlaybackRequiresUserAction={true}
-          allowsInlineMediaPlayback={true}
           style={{width: '100%', height: 350}}
+          allowsFullscreenVideo={true}
+          mediaPlaybackRequiresUserAction={false}
+          domStorageEnabled={true}
+          javaScriptEnabled={true}
+          allowsInlineMediaPlayback={true}
+          originWhitelist={['*']}
+          mixedContentMode="always"
+          scalesPageToFit={true}
+          onShouldStartLoadWithRequest={request => {
+            return true;
+          }}
+          onError={syntheticEvent => {
+            const {nativeEvent} = syntheticEvent;
+            console.warn('WebView error: ', nativeEvent);
+          }}
+          onLoadEnd={() => {
+            console.log('WebView loaded successfully');
+          }}
         />
       ) : (
         <Row>
@@ -138,7 +157,7 @@ const MovieDetails = ({navigation, route}: any) => {
             <Entypo color={colors.black} name="controller-play" size={24} />
           }
           title="Xem ngay"
-          onPress={() => handleWatchNow(listEpisodes[0].embed)}
+          onPress={() => handleWatchNow(listEpisodes[0]?.embed)}
         />
 
         <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
