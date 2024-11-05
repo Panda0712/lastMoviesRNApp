@@ -26,6 +26,7 @@ const MovieDetails = ({navigation, route}: any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [commentValue, setCommentValue] = useState('');
   const [reviews, setReviews] = useState<Reviews[]>([]);
+  const [activeEpisode, setActiveEpisode] = useState('');
 
   const {movie}: any = route.params;
   const user = auth().currentUser;
@@ -107,8 +108,6 @@ const MovieDetails = ({navigation, route}: any) => {
     }
   }, [movieSlug]);
 
-  console.log(reviews);
-
   return (
     <Container style={{backgroundColor: colors.black}}>
       <Section
@@ -165,6 +164,20 @@ const MovieDetails = ({navigation, route}: any) => {
         </Row>
       )}
       <Space height={16} />
+
+      {activeEpisode ? (
+        <Section>
+          <TextComponent
+            font={fontFamilies.firaMedium}
+            size={sizes.title}
+            color={colors.white}
+            text={`Đang xem: ${activeEpisode}`}
+          />
+        </Section>
+      ) : (
+        <></>
+      )}
+
       <Section>
         <Row justifyContent="space-between" alignItems="center">
           <TextComponent
@@ -182,7 +195,7 @@ const MovieDetails = ({navigation, route}: any) => {
         <Row justifyContent="flex-start">
           <TextComponent
             color={colors.grey3}
-            text={`${new Date(movie.created).getFullYear()} | ${
+            text={`${new Date(movie.created).getFullYear()} | Trạng thái: ${
               movie.current_episode
             } | ${movie.language} | ${movie.quality}`}
           />
@@ -217,7 +230,10 @@ const MovieDetails = ({navigation, route}: any) => {
             <Entypo color={colors.black} name="controller-play" size={24} />
           }
           title="Xem ngay"
-          onPress={() => handleWatchNow(listEpisodes[0]?.embed)}
+          onPress={() => {
+            handleWatchNow(listEpisodes[0]?.embed);
+            setActiveEpisode('Tập 1');
+          }}
         />
 
         <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
@@ -303,7 +319,10 @@ const MovieDetails = ({navigation, route}: any) => {
           <ScrollView horizontal={true} style={{flexDirection: 'row'}}>
             {moviesInfo[0]?.items.map((item, index) => (
               <Row
-                onPress={() => handlePlay(item.embed)}
+                onPress={() => {
+                  handlePlay(item.embed);
+                  setActiveEpisode(`Tập ${index + 1}`);
+                }}
                 key={index}
                 styles={{
                   position: 'relative',
