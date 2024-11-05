@@ -66,7 +66,7 @@ const CategoryFilmScreen = ({navigation}: any) => {
       <FlatList
         contentContainerStyle={{flexGrow: 1}}
         data={countries}
-        numColumns={3}
+        numColumns={2}
         keyExtractor={item => item.text}
         renderItem={({item, index}) => (
           <TouchableOpacity
@@ -127,7 +127,7 @@ const CategoryFilmScreen = ({navigation}: any) => {
         <FlatList
           data={years}
           contentContainerStyle={{flexGrow: 1}}
-          numColumns={5}
+          numColumns={4}
           keyExtractor={item => item}
           ListHeaderComponent={renderListHeader}
           renderItem={({item, index}) => (

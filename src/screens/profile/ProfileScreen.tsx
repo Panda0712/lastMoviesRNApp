@@ -63,7 +63,7 @@ const ProfileScreen = ({navigation}: any) => {
               <TextComponent
                 color={colors.white}
                 text="Thông tin tài khoản"
-                size={20}
+                size={sizes.title}
                 font={fontFamilies.firaMedium}
               />
             </Row>
@@ -138,7 +138,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Góp ý dịch vụ"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />
@@ -169,7 +169,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Giới thiệu"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />
@@ -194,7 +194,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Đăng xuất"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />
