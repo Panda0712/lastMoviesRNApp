@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import Share from 'react-native-share';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -32,6 +33,30 @@ const MovieDetails = ({navigation, route}: any) => {
   const user = auth().currentUser;
   const movieSlug = movie.slug;
   const listEpisodes = moviesInfo[0]?.items;
+
+  const handleShare = async () => {
+    let options;
+    if (movieUrl) {
+      options = {
+        url: movieUrl,
+      };
+    } else {
+      options = {
+        url: listEpisodes[0]?.embed,
+      };
+    }
+
+    try {
+      await Share.open(options);
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: error.message,
+      });
+      console.log(error.message);
+    }
+  };
 
   const handlePlay = (url: string) => {
     setMovieUrl(url);
@@ -284,7 +309,7 @@ const MovieDetails = ({navigation, route}: any) => {
           </Row>
           <Space width={36} />
           <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleShare}>
               <FontAwesome name="send" size={30} color={colors.white} />
             </TouchableOpacity>
             <TextComponent
