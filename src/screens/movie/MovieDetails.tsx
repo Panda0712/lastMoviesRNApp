@@ -49,11 +49,6 @@ const MovieDetails = ({navigation, route}: any) => {
     try {
       await Share.open(options);
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Thông báo',
-        text2: error.message,
-      });
       console.log(error.message);
     }
   };
