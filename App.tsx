@@ -6,6 +6,7 @@ import Toast, {
   BaseToast,
   BaseToastProps,
   ErrorToast,
+  InfoToast,
 } from 'react-native-toast-message';
 import AuthNavigator from './src/routers/AuthNavigator';
 import MainNavigator from './src/routers/MainNavigator';
@@ -16,6 +17,18 @@ const toastConfig = {
       {...props}
       style={{borderLeftColor: 'pink'}}
       contentContainerStyle={{paddingHorizontal: 15}}
+      text1Style={{
+        fontSize: 17,
+      }}
+      text2Style={{
+        fontSize: 15,
+      }}
+    />
+  ),
+
+  info: (props: React.JSX.IntrinsicAttributes & BaseToastProps) => (
+    <InfoToast
+      {...props}
       text1Style={{
         fontSize: 17,
       }}

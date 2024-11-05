@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Input, Row, Space} from '@bsdaoquang/rncomponent';
+import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import React, {useState} from 'react';
 import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
 import {Container, TextComponent} from '../../components';
@@ -73,15 +73,11 @@ const Login = ({navigation}: any) => {
             }}
           />
 
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
+          <Row
+            justifyContent="center"
+            styles={{
+              flexDirection: 'column',
+              height: '100%',
             }}>
             <Image
               source={require('../../assets/images/logo.png')}
@@ -132,22 +128,40 @@ const Login = ({navigation}: any) => {
               />
             </View>
 
-            <Row justifyContent="flex-end">
-              <TextComponent color={colors.white} text="Không có tài khoản?" />
-              <Space width={10} />
-              <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                <TextComponent
-                  styles={{
-                    fontFamily: fontFamilies.firaMedium,
-                    textDecorationLine: 'underline',
-                  }}
-                  color={colors.white}
-                  text="Đăng ký ngay"
-                />
-              </TouchableOpacity>
-            </Row>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}>
+              <Section styles={{paddingBottom: 4}}>
+                <Row justifyContent="flex-end" styles={{width: '100%'}}>
+                  <TextComponent
+                    styles={{textAlign: 'right'}}
+                    color={colors.white}
+                    text="Quên mật khẩu?"
+                  />
+                </Row>
+              </Section>
+            </TouchableOpacity>
 
-            <Space height={30} />
+            <Section>
+              <Row justifyContent="flex-end" styles={{width: '100%'}}>
+                <TextComponent
+                  color={colors.white}
+                  text="Không có tài khoản?"
+                />
+                <Space width={10} />
+                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                  <TextComponent
+                    styles={{
+                      fontFamily: fontFamilies.firaMedium,
+                      textDecorationLine: 'underline',
+                    }}
+                    color={colors.white}
+                    text="Đăng ký ngay"
+                  />
+                </TouchableOpacity>
+              </Row>
+            </Section>
+
+            <Space height={18} />
 
             <Button
               styles={{width: sizes.width - 40}}
@@ -157,7 +171,7 @@ const Login = ({navigation}: any) => {
               title="Đăng nhập với Google"
               onPress={handleLoginWithGoogle}
             />
-          </View>
+          </Row>
         </ImageBackground>
       </View>
     </Container>

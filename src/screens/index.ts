@@ -1,4 +1,5 @@
 import AboutScreen from './about/AboutScreen';
+import ForgotPassword from './auth/ForgotPassword';
 import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import Swiper from './auth/Swiper';
@@ -29,4 +30,6 @@ export {
   AboutScreen,
   UserScreen,
   CategoryDetails,
+  PasswordReset,
+  ForgotPassword,
 };
