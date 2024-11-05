@@ -31,10 +31,11 @@ export interface Episodes {
 export interface Comments {
   user: string;
   userComments: string;
+  timestamp: string;
 }
 
 export interface Reviews {
+  id: string;
   name: string;
   comments: Comments[];
-  timestamp: string;
 }

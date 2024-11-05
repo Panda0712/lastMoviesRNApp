@@ -98,9 +98,10 @@ const MovieDetails = ({navigation, route}: any) => {
     const commentData = {
       user: user?.displayName,
       userComments: commentValue,
+      timestamp: new Date(),
     };
 
-    if (reviews[0]?.id && reviews?.length > 0) {
+    if (reviews.length > 0) {
       await firestore()
         .doc(`reviews/${reviews[0].id}`)
         .update({
@@ -112,7 +113,6 @@ const MovieDetails = ({navigation, route}: any) => {
         .add({
           name: movieSlug,
           comments: [commentData],
-          timestamp: new Date(),
         });
     }
     setCommentValue('');
@@ -127,6 +127,8 @@ const MovieDetails = ({navigation, route}: any) => {
       handleGetMoviesInfo(movieSlug.toString());
     }
   }, [movieSlug]);
+
+  console.log(reviews);
 
   return (
     <Container style={{backgroundColor: colors.black}}>
@@ -461,7 +463,7 @@ const MovieDetails = ({navigation, route}: any) => {
                         textAlign: 'right',
                       }}
                       color={colors.grey}
-                      text={parseTime(reviews[0]?.timestamp)}
+                      text={parseTime(item.timestamp)}
                     />
                   </Row>
                 ))}
