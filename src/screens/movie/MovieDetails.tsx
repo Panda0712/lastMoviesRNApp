@@ -4,8 +4,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import React, { UIEventHandler, useEffect, useState } from 'react';
 import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import Share from 'react-native-share';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -369,223 +369,220 @@ const MovieDetails = ({ navigation, route }: any) => {
             />
           </Row>
           <Space width={36} />
-<<<<<<< HEAD
           <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
             <TouchableOpacity>
-=======
-          <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
-            <TouchableOpacity onPress={handleShare}>
->>>>>>> 1d149de69a2baee51c2cf76c68a71838838a4470
-              <FontAwesome name="send" size={30} color={colors.white} />
-            </TouchableOpacity>
-            <TextComponent
-              size={sizes.text}
-              color={colors.white}
-              text="Chia sẻ"
-            />
-          </Row>
-        </Row>
-        <Space height={8} />
-        <Row
-          styles={{
-            flexDirection: 'column',
-            borderBottomColor: colors.black2,
-            borderBottomWidth: 2,
-            paddingBottom: 15,
-          }}
-          alignItems="flex-start">
-          <TextComponent
-            font={fontFamilies.firaSemiBold}
-            size={sizes.title}
-            color={colors.white}
-            text="Danh sách tập"
-          />
-          <Space height={2} />
-          <TextComponent
-            size={sizes.title}
-            color={colors.white}
-            text={movie.name}
-          />
-          <Space height={18} />
-          <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
-            {moviesInfo[0]?.items.map((item, index) => (
-              <Row
-                onPress={() => {
-                  handlePlay(item.embed);
-                  setActiveEpisode(`Tập ${index + 1}`);
-                }}
-                key={index}
-                styles={{
-                  position: 'relative',
-                  flexDirection: 'column',
-                  marginRight: 8,
-                }}
-                alignItems="flex-start">
-                <Row
-                  styles={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 100,
-                    backgroundColor: 'rgba(0,0,0,.4)',
-                    transform: [{ translateX: -15 }, { translateY: -30 }],
-                    width: 30,
-                    height: 30,
-                    borderColor: colors.white,
-                    borderWidth: 1.5,
-                    borderRadius: 100,
-                  }}>
-                  <Entypo
-                    color={colors.white}
-                    name="controller-play"
-                    size={20}
-                  />
-                </Row>
-
-                <Image
-                  resizeMode="cover"
-                  source={{ uri: movie.thumb_url }}
-                  width={50}
-                  height={50}
-                  style={{ width: 180, height: 100, objectFit: 'cover' }}
+              <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
+                <TouchableOpacity onPress={handleShare}>
+                  <FontAwesome name="send" size={30} color={colors.white} />
+                </TouchableOpacity>
+                <TextComponent
+                  size={sizes.text}
+                  color={colors.white}
+                  text="Chia sẻ"
                 />
-                <Space height={4} />
-                <TextComponent color={colors.white} text={`Tập ${index + 1}`} />
               </Row>
-            ))}
-          </ScrollView>
-        </Row>
-        <Space height={8} />
-
-        <Row alignItems="flex-start" styles={{ flexDirection: 'column' }}>
-          <TextComponent
-            text="Bình luận"
-            font={fontFamilies.firaSemiBold}
-            size={sizes.title}
-            color={colors.white}
-          />
-          <Space height={12} />
-          <Row justifyContent="flex-start" styles={{ width: '100%' }}>
-            <Input
-              bordered={false}
-              color="transparent"
-              styles={{
-                width: sizes.width - 40,
-                paddingHorizontal: 0,
-              }}
-              value={commentValue}
-              onChange={setCommentValue}
-              placeholderColor={colors.white}
-              inputStyles={{ color: colors.white }}
-              placeholder="Nhập bình luận"
-              prefix={
-                user?.photoURL ? (
+          </Row>
+          <Space height={8} />
+          <Row
+            styles={{
+              flexDirection: 'column',
+              borderBottomColor: colors.black2,
+              borderBottomWidth: 2,
+              paddingBottom: 15,
+            }}
+            alignItems="flex-start">
+            <TextComponent
+              font={fontFamilies.firaSemiBold}
+              size={sizes.title}
+              color={colors.white}
+              text="Danh sách tập"
+            />
+            <Space height={2} />
+            <TextComponent
+              size={sizes.title}
+              color={colors.white}
+              text={movie.name}
+            />
+            <Space height={18} />
+            <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
+              {moviesInfo[0]?.items.map((item, index) => (
+                <Row
+                  onPress={() => {
+                    handlePlay(item.embed);
+                    setActiveEpisode(`Tập ${index + 1}`);
+                  }}
+                  key={index}
+                  styles={{
+                    position: 'relative',
+                    flexDirection: 'column',
+                    marginRight: 8,
+                  }}
+                  alignItems="flex-start">
                   <Row
                     styles={{
-                      position: 'relative',
-                      borderRadius: 100,
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      zIndex: 100,
+                      backgroundColor: 'rgba(0,0,0,.4)',
+                      transform: [{ translateX: -15 }, { translateY: -30 }],
                       width: 30,
                       height: 30,
-                      overflow: 'hidden',
+                      borderColor: colors.white,
+                      borderWidth: 1.5,
+                      borderRadius: 100,
                     }}>
-                    <Image
-                      source={{uri: user.photoURL}}
-                      width={20}
-                      height={20}
-                      style={{width: 30, height: 30}}
+                    <Entypo
+                      color={colors.white}
+                      name="controller-play"
+                      size={20}
                     />
                   </Row>
-                ) : (
-                  <FontAwesome6
-                    name="circle-user"
-                    color={colors.white}
-                    size={30}
+
+                  <Image
+                    resizeMode="cover"
+                    source={{ uri: movie.thumb_url }}
+                    width={50}
+                    height={50}
+                    style={{ width: 180, height: 100, objectFit: 'cover' }}
                   />
-                )
-              }
-              affix={
-                <TouchableOpacity onPress={handlePostComments}>
-                  <Ionicons name="send" color={colors.white} size={24} />
-                </TouchableOpacity>
-              }
-            />
+                  <Space height={4} />
+                  <TextComponent color={colors.white} text={`Tập ${index + 1}`} />
+                </Row>
+              ))}
+            </ScrollView>
           </Row>
-          <Space height={4} />
-          {reviews?.length > 0 ? (
-            <View>
-              <Row alignItems="flex-start" styles={{ flexDirection: 'column' }}>
-                {reviews[0]?.comments.map((item, index) => (
-                  <Row
-                    styles={{
-                      position: 'relative',
-                      marginBottom: 10,
-                      width: sizes.width - 50,
-                    }}
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    key={index}>
-                    <Row alignItems="flex-start">
-                      {item?.photoUrl ? (
+          <Space height={8} />
+
+          <Row alignItems="flex-start" styles={{ flexDirection: 'column' }}>
+            <TextComponent
+              text="Bình luận"
+              font={fontFamilies.firaSemiBold}
+              size={sizes.title}
+              color={colors.white}
+            />
+            <Space height={12} />
+            <Row justifyContent="flex-start" styles={{ width: '100%' }}>
+              <Input
+                bordered={false}
+                color="transparent"
+                styles={{
+                  width: sizes.width - 40,
+                  paddingHorizontal: 0,
+                }}
+                value={commentValue}
+                onChange={setCommentValue}
+                placeholderColor={colors.white}
+                inputStyles={{ color: colors.white }}
+                placeholder="Nhập bình luận"
+                prefix={
+                  user?.photoURL ? (
+                    <Row
+                      styles={{
+                        position: 'relative',
+                        borderRadius: 100,
+                        width: 30,
+                        height: 30,
+                        overflow: 'hidden',
+                      }}>
+                      <Image
+                        source={{ uri: user.photoURL }}
+                        width={20}
+                        height={20}
+                        style={{ width: 30, height: 30 }}
+                      />
+                    </Row>
+                  ) : (
+                    <FontAwesome6
+                      name="circle-user"
+                      color={colors.white}
+                      size={30}
+                    />
+                  )
+                }
+                affix={
+                  <TouchableOpacity onPress={handlePostComments}>
+                    <Ionicons name="send" color={colors.white} size={24} />
+                  </TouchableOpacity>
+                }
+              />
+            </Row>
+            <Space height={4} />
+            {reviews?.length > 0 ? (
+              <View>
+                <Row alignItems="flex-start" styles={{ flexDirection: 'column' }}>
+                  {reviews[0]?.comments.map((item, index) => (
+                    <Row
+                      styles={{
+                        position: 'relative',
+                        marginBottom: 10,
+                        width: sizes.width - 50,
+                      }}
+                      alignItems="flex-start"
+                      justifyContent="space-between"
+                      key={index}>
+                      <Row alignItems="flex-start">
+                        {item?.photoUrl ? (
+                          <Row
+                            styles={{
+                              position: 'relative',
+                              borderRadius: 100,
+                              width: 30,
+                              height: 30,
+                              overflow: 'hidden',
+                            }}>
+                            <Image
+                              source={{ uri: item.photoUrl }}
+                              width={20}
+                              height={20}
+                              style={{ width: 30, height: 30 }}
+                            />
+                          </Row>
+                        ) : (
+                          <FontAwesome6
+                            name="circle-user"
+                            color={colors.white}
+                            size={30}
+                          />
+                        )}
+                        <Space width={12} />
                         <Row
-                          styles={{
-                            position: 'relative',
-                            borderRadius: 100,
-                            width: 30,
-                            height: 30,
-                            overflow: 'hidden',
-                          }}>
-                          <Image
-                            source={{uri: item.photoUrl}}
-                            width={20}
-                            height={20}
-                            style={{width: 30, height: 30}}
+                          alignItems="flex-start"
+                          styles={{ flexDirection: 'column' }}>
+                          <TextComponent
+                            font={fontFamilies.firaMedium}
+                            color={colors.white}
+                            text={item.user}
+                          />
+                          <TextComponent
+                            color={colors.white}
+                            text={item.userComments}
                           />
                         </Row>
-                      ) : (
-                        <FontAwesome6
-                          name="circle-user"
-                          color={colors.white}
-                          size={30}
-                        />
-                      )}
-                      <Space width={12} />
-                      <Row
-                        alignItems="flex-start"
-                        styles={{ flexDirection: 'column' }}>
-                        <TextComponent
-                          font={fontFamilies.firaMedium}
-                          color={colors.white}
-                          text={item.user}
-                        />
-                        <TextComponent
-                          color={colors.white}
-                          text={item.userComments}
-                        />
                       </Row>
+                      <TextComponent
+                        styles={{
+                          textAlign: 'right',
+                        }}
+                        color={colors.grey}
+                        text={parseTime(item.timestamp)}
+                      />
                     </Row>
-                    <TextComponent
-                      styles={{
-                        textAlign: 'right',
-                      }}
-                      color={colors.grey}
-                      text={parseTime(item.timestamp)}
-                    />
-                  </Row>
-                ))}
-              </Row>
-            </View>
-          ) : (
-            <Section>
-              <Row>
-                <TextComponent
-                  font={fontFamilies.firaMedium}
-                  color={colors.white}
-                  text="Chưa có bình luận nào"
-                />
-              </Row>
-            </Section>
-          )}
-        </Row>
+                  ))}
+                </Row>
+              </View>
+            ) : (
+              <Section>
+                <Row>
+                  <TextComponent
+                    font={fontFamilies.firaMedium}
+                    color={colors.white}
+                    text="Chưa có bình luận nào"
+                  />
+                </Row>
+              </Section>
+            )}
+          </Row>
       </Section>
     </Container>
   );
