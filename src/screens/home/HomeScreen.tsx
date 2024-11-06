@@ -1,25 +1,27 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
-import React, {useEffect, useState} from 'react';
-import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
+import { Button, Row, Section, Space } from '@bsdaoquang/rncomponent';
+import React, { useEffect, useState } from 'react';
+import { Image, ImageBackground, TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Container, TextComponent} from '../../components';
+import { Container, TextComponent } from '../../components';
 import CategoryComponent from '../../components/CategoryComponent';
 import FlatListComponent from '../../components/FlatListComponent';
-import {colors} from '../../constants/colors';
-import {fontFamilies} from '../../constants/fontFamilies';
-import {Movie} from '../../constants/models';
-import {sizes} from '../../constants/sizes';
+import { colors } from '../../constants/colors';
+import { fontFamilies } from '../../constants/fontFamilies';
+import { Movie } from '../../constants/models';
+import { sizes } from '../../constants/sizes';
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
 import {
   getCurrentMovies,
   getSpecificCategoryMovies,
   getStreamingMovies,
 } from '../../lib/actions';
 
-const HomeScreen = ({navigation}: any) => {
+const HomeScreen = ({ navigation }: any) => {
   const [streamingMovies, setStreamingMovies] = useState<Movie[]>([]);
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
   const [seriesMovies, setSeriesMovies] = useState<Movie[]>([]);
@@ -28,21 +30,86 @@ const HomeScreen = ({navigation}: any) => {
   const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
   const [tvShows, setTVShows] = useState<Movie[]>([]);
   const [sexMovies, setSexMovies] = useState<Movie[]>([]);
+  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({})
+  const userId = auth().currentUser?.uid;
 
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
+    const names = item.map((i: any) => i.name);
+    console.log('List of movie names: ', names)
   };
 
   const getCurrentMoviesHome = async () => {
-    const item: any = await getCurrentMovies();
-    setCurrentMovies(item);
+    try {
+      const item: any = await getCurrentMovies();
+      setCurrentMovies(item);
+    }
+    catch (error) {
+      console.log(error)
+    }
   };
 
-  const getCurrentSeriesMovies = async () => {
+  const fetchFavorites = async (userId: string | undefined) => {
+    if (!userId) return;
+    const userRef = firestore().collection('favorites').doc(userId);
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      const existingFavorites = userDoc.data()?.favorites || [];
+      const favoriteMap: { [key: string]: boolean } = {};
+      existingFavorites.forEach((movie: any) => {
+        favoriteMap[movie.title] = true;
+      });
+      setFavorites(favoriteMap);
+    }
+  };
+
+  const toggleFavoriteMovie = async (
+    userId: string | undefined,
+    movieTitle: string,
+    poster: string,
+    episode: string,
+  ) => {
+    try {
+      const userRef = firestore().collection('favorites').doc(userId);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+        await userRef.set({ favorites: [] });
+      }
+
+      const existingFavorites = userDoc.data()?.favorites || [];
+      const isMovieExists = existingFavorites.some(
+        (movie: any) => movie.title === movieTitle
+      );
+
+      const newFavorite = {
+        title: movieTitle,
+        poster: poster,
+        episode: episode,
+      };
+
+      if (isMovieExists) {
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayRemove(newFavorite)
+        });
+        setFavorites((prev) => ({ ...prev, [movieTitle]: false }));
+      } else {
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayUnion(newFavorite)
+        });
+        setFavorites((prev) => ({ ...prev, [movieTitle]: true }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  async function getCurrentSeriesMovies() {
     const item: any = await getSpecificCategoryMovies('phim-bo');
     setSeriesMovies(item);
-  };
+  }
 
   const getCurrentCinemaMovies = async () => {
     const item: any = await getSpecificCategoryMovies('phim-le');
@@ -70,6 +137,7 @@ const HomeScreen = ({navigation}: any) => {
   };
 
   useEffect(() => {
+    fetchFavorites(userId);
     getMovies();
     getCurrentMoviesHome();
     getCurrentSeriesMovies();
@@ -81,7 +149,7 @@ const HomeScreen = ({navigation}: any) => {
   }, []);
 
   return (
-    <Container style={{backgroundColor: colors.black}}>
+    <Container style={{ backgroundColor: colors.black }}>
       <Section
         styles={{
           position: 'absolute',
@@ -93,7 +161,7 @@ const HomeScreen = ({navigation}: any) => {
         }}>
         <Row justifyContent="space-between" alignItems="center">
           <Image
-            style={{width: 110, height: 110}}
+            style={{ width: 110, height: 110 }}
             source={require('../../assets/images/logo.png')}
             width={100}
             height={100}
@@ -104,14 +172,14 @@ const HomeScreen = ({navigation}: any) => {
         </Row>
       </Section>
       <View>
-        <Swiper showsPagination={false} style={{height: 380}}>
+        <Swiper showsPagination={false} style={{ height: 380 }}>
           {streamingMovies.map((item, index) => (
-            <View key={index} style={{width: sizes.width}}>
+            <View key={index} style={{ width: sizes.width }}>
               <ImageBackground
-                source={{uri: item.poster_url}}
+                source={{ uri: item.poster_url }}
                 width={50}
                 height={50}
-                style={{width: '100%', height: 380}}>
+                style={{ width: '100%', height: 380 }}>
                 <View
                   style={{
                     position: 'absolute',
@@ -123,7 +191,7 @@ const HomeScreen = ({navigation}: any) => {
                   }}
                 />
 
-                <Row styles={{height: '100%'}} alignItems="flex-end">
+                <Row styles={{ height: '100%' }} alignItems="flex-end">
                   <Row
                     styles={{
                       width: '100%',
@@ -131,12 +199,12 @@ const HomeScreen = ({navigation}: any) => {
                       marginBottom: 4,
                     }}
                     alignItems="center">
-                    <TouchableOpacity>
-                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                    <TouchableOpacity onPress={() => toggleFavoriteMovie(userId, item.name, item.poster_url, item.current_episode)}>
+                      <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
-                          name="hearto"
+                          name="heart"
                           size={sizes.icon}
-                          color={colors.white}
+                          color={favorites[item.name] ? colors.red : colors.white}
                         />
                         <TextComponent color={colors.white} text="Yêu thích" />
                       </Row>
@@ -151,7 +219,7 @@ const HomeScreen = ({navigation}: any) => {
                         />
                       }
                       radius={6}
-                      styles={{paddingVertical: 2, paddingHorizontal: 16}}
+                      styles={{ paddingVertical: 2, paddingHorizontal: 16 }}
                       textStyleProps={{
                         fontFamily: fontFamilies.firaSemiBold,
                         fontSize: sizes.text,
@@ -160,15 +228,15 @@ const HomeScreen = ({navigation}: any) => {
                       color={colors.white}
                       title="Xem ngay"
                       onPress={() =>
-                        navigation.navigate('MovieDetails', {movie: item})
+                        navigation.navigate('MovieDetails', { movie: item })
                       }
                     />
                     <Space width={28} />
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('MovieDetails', {movie: item})
+                        navigation.navigate('MovieDetails', { movie: item })
                       }>
-                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                      <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
                           name="infocirlceo"
                           size={sizes.icon}
