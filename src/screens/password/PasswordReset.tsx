@@ -1,6 +1,6 @@
 import {Button, Input, Section, Space} from '@bsdaoquang/rncomponent';
 import React, {useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container} from '../../components';
 import {colors} from '../../constants/colors';
@@ -72,7 +72,6 @@ const PasswordReset = ({navigation}: any) => {
           />
           <Space height={40} />
           <Button
-            // loading={}
             radius={6}
             textStyleProps={{fontFamily: fontFamilies.firaSemiBold}}
             color={colors.red}

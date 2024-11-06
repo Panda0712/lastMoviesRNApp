@@ -4,8 +4,6 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import React, { UIEventHandler, useEffect, useState } from 'react';
 import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import Share from 'react-native-share';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
