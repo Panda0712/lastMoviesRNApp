@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Container } from '../../components';
 import { colors } from '../../constants/colors';
 import { fontFamilies } from '../../constants/fontFamilies';
-import auth from '@react-native-firebase/auth';  // Import Firebase Auth
+import auth from '@react-native-firebase/auth';
 
 const PasswordReset = ({ navigation }: any) => {
   const [oldPassword, setOldPassword] = useState('');
