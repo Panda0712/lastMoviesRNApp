@@ -37,12 +37,40 @@ const ProfileScreen = ({navigation}: any) => {
           height={50}
           style={{width: 220, height: 180}}
         />
-        <TextComponent
-          font={fontFamilies.firaSemiBold}
-          size={sizes.bigTitle}
-          color={colors.white}
-          text={user?.displayName ?? ''}
-        />
+        {user?.photoURL ? (
+          <Row alignItems="center">
+            <Row
+              styles={{
+                position: 'relative',
+                borderRadius: 100,
+                width: 40,
+                height: 40,
+                overflow: 'hidden',
+              }}>
+              <Image
+                source={{uri: user.photoURL}}
+                width={20}
+                height={20}
+                style={{width: 40, height: 40}}
+              />
+            </Row>
+            <Space width={12} />
+            <TextComponent
+              styles={{marginBottom: 3}}
+              font={fontFamilies.firaSemiBold}
+              size={sizes.bigTitle}
+              color={colors.white}
+              text={user?.displayName ?? ''}
+            />
+          </Row>
+        ) : (
+          <TextComponent
+            font={fontFamilies.firaSemiBold}
+            size={sizes.bigTitle}
+            color={colors.white}
+            text={user?.displayName ?? ''}
+          />
+        )}
       </Row>
       <Space height={30} />
       <Section>
@@ -63,7 +91,7 @@ const ProfileScreen = ({navigation}: any) => {
               <TextComponent
                 color={colors.white}
                 text="Thông tin tài khoản"
-                size={20}
+                size={sizes.title}
                 font={fontFamilies.firaMedium}
               />
             </Row>
@@ -92,27 +120,32 @@ const ProfileScreen = ({navigation}: any) => {
                 </Row>
               </Row>
 
-              <Space height={16} />
-
-              <Row>
-                <Row
-                  justifyContent="flex-start"
-                  styles={{
-                    width: '100%',
-                    borderBottomColor: colors.black2,
-                    borderWidth: 1,
-                    paddingBottom: 8,
-                  }}
-                  onPress={() => navigation.navigate('PasswordScreen')}>
-                  <AntDesign
-                    name="lock1"
-                    color={colors.white}
-                    size={sizes.icon}
-                  />
-                  <Space width={12} />
-                  <TextComponent text="Đổi mật khẩu" color={colors.white} />
-                </Row>
-              </Row>
+              {user?.photoURL ? (
+                <></>
+              ) : (
+                <>
+                  <Space height={16} />
+                  <Row>
+                    <Row
+                      justifyContent="flex-start"
+                      styles={{
+                        width: '100%',
+                        borderBottomColor: colors.black2,
+                        borderWidth: 1,
+                        paddingBottom: 8,
+                      }}
+                      onPress={() => navigation.navigate('PasswordScreen')}>
+                      <AntDesign
+                        name="lock1"
+                        color={colors.white}
+                        size={sizes.icon}
+                      />
+                      <Space width={12} />
+                      <TextComponent text="Đổi mật khẩu" color={colors.white} />
+                    </Row>
+                  </Row>
+                </>
+              )}
             </Section>
           )}
           <Row
@@ -138,7 +171,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Góp ý dịch vụ"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />
@@ -169,7 +202,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Giới thiệu"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />
@@ -194,7 +227,7 @@ const ProfileScreen = ({navigation}: any) => {
                 color={colors.white}
                 text="Đăng xuất"
                 font={fontFamilies.firaMedium}
-                size={20}
+                size={sizes.title}
               />
             </Row>
             <TextComponent size={sizes.icon} color={colors.grey} text=">" />

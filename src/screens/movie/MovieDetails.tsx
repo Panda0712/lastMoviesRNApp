@@ -4,6 +4,9 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import React, { UIEventHandler, useEffect, useState } from 'react';
 import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import Share from 'react-native-share';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -36,6 +39,25 @@ const MovieDetails = ({ navigation, route }: any) => {
   const user = auth().currentUser;
   const movieSlug = movie.slug;
   const listEpisodes = moviesInfo[0]?.items;
+
+  const handleShare = async () => {
+    let options;
+    if (movieUrl) {
+      options = {
+        url: movieUrl,
+      };
+    } else {
+      options = {
+        url: listEpisodes[0]?.embed,
+      };
+    }
+
+    try {
+      await Share.open(options);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const handlePlay = (url: string) => {
     setMovieUrl(url);
@@ -82,9 +104,11 @@ const MovieDetails = ({ navigation, route }: any) => {
     const commentData = {
       user: user?.displayName,
       userComments: commentValue,
+      photoUrl: user?.photoURL ?? '',
+      timestamp: new Date(),
     };
 
-    if (reviews[0]?.id && reviews?.length > 0) {
+    if (reviews.length > 0) {
       await firestore()
         .doc(`reviews/${reviews[0].id}`)
         .update({
@@ -96,7 +120,6 @@ const MovieDetails = ({ navigation, route }: any) => {
         .add({
           name: movieSlug,
           comments: [commentData],
-          timestamp: new Date(),
         });
     }
     setCommentValue('');
@@ -346,8 +369,13 @@ const MovieDetails = ({ navigation, route }: any) => {
             />
           </Row>
           <Space width={36} />
+<<<<<<< HEAD
           <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
             <TouchableOpacity>
+=======
+          <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
+            <TouchableOpacity onPress={handleShare}>
+>>>>>>> 1d149de69a2baee51c2cf76c68a71838838a4470
               <FontAwesome name="send" size={30} color={colors.white} />
             </TouchableOpacity>
             <TextComponent
@@ -451,11 +479,29 @@ const MovieDetails = ({ navigation, route }: any) => {
               inputStyles={{ color: colors.white }}
               placeholder="Nhập bình luận"
               prefix={
-                <FontAwesome6
-                  name="circle-user"
-                  color={colors.white}
-                  size={30}
-                />
+                user?.photoURL ? (
+                  <Row
+                    styles={{
+                      position: 'relative',
+                      borderRadius: 100,
+                      width: 30,
+                      height: 30,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      source={{uri: user.photoURL}}
+                      width={20}
+                      height={20}
+                      style={{width: 30, height: 30}}
+                    />
+                  </Row>
+                ) : (
+                  <FontAwesome6
+                    name="circle-user"
+                    color={colors.white}
+                    size={30}
+                  />
+                )
               }
               affix={
                 <TouchableOpacity onPress={handlePostComments}>
@@ -479,11 +525,29 @@ const MovieDetails = ({ navigation, route }: any) => {
                     justifyContent="space-between"
                     key={index}>
                     <Row alignItems="flex-start">
-                      <FontAwesome6
-                        name="circle-user"
-                        color={colors.white}
-                        size={30}
-                      />
+                      {item?.photoUrl ? (
+                        <Row
+                          styles={{
+                            position: 'relative',
+                            borderRadius: 100,
+                            width: 30,
+                            height: 30,
+                            overflow: 'hidden',
+                          }}>
+                          <Image
+                            source={{uri: item.photoUrl}}
+                            width={20}
+                            height={20}
+                            style={{width: 30, height: 30}}
+                          />
+                        </Row>
+                      ) : (
+                        <FontAwesome6
+                          name="circle-user"
+                          color={colors.white}
+                          size={30}
+                        />
+                      )}
                       <Space width={12} />
                       <Row
                         alignItems="flex-start"
@@ -504,7 +568,7 @@ const MovieDetails = ({ navigation, route }: any) => {
                         textAlign: 'right',
                       }}
                       color={colors.grey}
-                      text={parseTime(reviews[0]?.timestamp)}
+                      text={parseTime(item.timestamp)}
                     />
                   </Row>
                 ))}
