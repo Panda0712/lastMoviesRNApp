@@ -32,6 +32,7 @@ export interface Comments {
   user: string;
   userComments: string;
   timestamp: string;
+  photoUrl: string;
 }
 
 export interface Reviews {

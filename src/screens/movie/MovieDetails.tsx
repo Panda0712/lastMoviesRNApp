@@ -98,6 +98,7 @@ const MovieDetails = ({navigation, route}: any) => {
     const commentData = {
       user: user?.displayName,
       userComments: commentValue,
+      photoUrl: user?.photoURL ?? '',
       timestamp: new Date(),
     };
 
@@ -127,8 +128,6 @@ const MovieDetails = ({navigation, route}: any) => {
       handleGetMoviesInfo(movieSlug.toString());
     }
   }, [movieSlug]);
-
-  console.log(reviews);
 
   return (
     <Container style={{backgroundColor: colors.black}}>
@@ -410,11 +409,29 @@ const MovieDetails = ({navigation, route}: any) => {
               inputStyles={{color: colors.white}}
               placeholder="Nhập bình luận"
               prefix={
-                <FontAwesome6
-                  name="circle-user"
-                  color={colors.white}
-                  size={30}
-                />
+                user?.photoURL ? (
+                  <Row
+                    styles={{
+                      position: 'relative',
+                      borderRadius: 100,
+                      width: 30,
+                      height: 30,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      source={{uri: user.photoURL}}
+                      width={20}
+                      height={20}
+                      style={{width: 30, height: 30}}
+                    />
+                  </Row>
+                ) : (
+                  <FontAwesome6
+                    name="circle-user"
+                    color={colors.white}
+                    size={30}
+                  />
+                )
               }
               affix={
                 <TouchableOpacity onPress={handlePostComments}>
@@ -438,11 +455,29 @@ const MovieDetails = ({navigation, route}: any) => {
                     justifyContent="space-between"
                     key={index}>
                     <Row alignItems="flex-start">
-                      <FontAwesome6
-                        name="circle-user"
-                        color={colors.white}
-                        size={30}
-                      />
+                      {item?.photoUrl ? (
+                        <Row
+                          styles={{
+                            position: 'relative',
+                            borderRadius: 100,
+                            width: 30,
+                            height: 30,
+                            overflow: 'hidden',
+                          }}>
+                          <Image
+                            source={{uri: item.photoUrl}}
+                            width={20}
+                            height={20}
+                            style={{width: 30, height: 30}}
+                          />
+                        </Row>
+                      ) : (
+                        <FontAwesome6
+                          name="circle-user"
+                          color={colors.white}
+                          size={30}
+                        />
+                      )}
                       <Space width={12} />
                       <Row
                         alignItems="flex-start"

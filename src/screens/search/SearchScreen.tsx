@@ -2,16 +2,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import React, {useCallback, useEffect, useState} from 'react';
+import {FlatList, Image, TouchableOpacity} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
-import {FlatList, Image, TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {sizes} from '../../constants/sizes';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {Movie} from '../../constants/models';
+import {sizes} from '../../constants/sizes';
 import {getSearchMovies, getStreamingMovies} from '../../lib/actions';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const SearchScreen = ({navigation}: any) => {
   const [searchQuery, setSearchQuery] = useState('');

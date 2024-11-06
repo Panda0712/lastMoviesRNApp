@@ -1,35 +1,38 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import HomeNavigator from './HomeNavigator';
-import ProfileNavigator from './ProfileNavigator';
-import { colors } from '../constants/colors';
+import {View} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { View } from 'react-native';
-import { TextComponent } from '../components';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {TextComponent} from '../components';
+import {colors} from '../constants/colors';
+import {fontFamilies} from '../constants/fontFamilies';
+import {sizes} from '../constants/sizes';
 import CategoryNavigator from './CategoryNavigator';
 import FavoriteNavigator from './FavoriteNavigator';
+import HomeNavigator from './HomeNavigator';
+import ProfileNavigator from './ProfileNavigator';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: colors.white,
+          backgroundColor: colors.black,
           height: 70,
           justifyContent: 'center',
+          borderColor: colors.black,
           alignItems: 'center',
         },
-        tabBarIcon: ({ focused, color, size }) => {
-          color = focused ? colors.black : colors.black4;
-          size = 24;
+        tabBarIcon: ({focused, color, size}) => {
+          color = focused ? colors.grey : colors.grey4;
+          size = 22;
           let icon = <Entypo name="home" color={color} size={size} />;
           let name = 'Trang chủ';
 
@@ -45,9 +48,14 @@ const TabNavigator = () => {
           }
 
           return (
-            <View style={{ alignItems: 'center' }}>
+            <View style={{alignItems: 'center'}}>
               {icon}
-              <TextComponent text={name} />
+              <TextComponent
+                color={colors.white}
+                font={fontFamilies.firaRegular}
+                size={sizes.desc}
+                text={name}
+              />
             </View>
           );
         },

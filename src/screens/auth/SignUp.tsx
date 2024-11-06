@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Input, Row, Space} from '@bsdaoquang/rncomponent';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -17,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import {Auth} from '../../utils/handleAuth';
 import Toast from 'react-native-toast-message';
 import {validateEmail} from '../../utils/helpers';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const initialValue = {
   username: '',
@@ -67,7 +68,30 @@ const SignUp = ({navigation}: any) => {
     }
   };
 
-  const handleSignInWithGoogle = async () => {};
+  const handleSignInWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo?.data?.idToken;
+
+      console.log(userInfo);
+
+      if (!idToken) {
+        throw new Error('Failed to get idToken from Google Sign-in');
+      }
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      await auth().signInWithCredential(googleCredential);
+    } catch (error: any) {
+      console.log(error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Lỗi đăng nhập với Google! Vui lòng thử lại',
+      });
+    }
+  };
 
   const handleChangeValue = (key: string, value: string) => {
     if (!key || !value) {
@@ -78,6 +102,13 @@ const SignUp = ({navigation}: any) => {
     items[`${key}`] = value;
     setSignUpForm(items);
   };
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '245540911377-2dhjjqp3utoe1naqns0s7dlrmoph9ncv.apps.googleusercontent.com',
+    });
+  }, []);
 
   return (
     <Container isScroll={false}>
