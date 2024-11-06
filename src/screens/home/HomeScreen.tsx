@@ -36,8 +36,8 @@ const HomeScreen = ({ navigation }: any) => {
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
-    const names = item.map((i: any) => i.name);
-    console.log('List of movie names: ', names)
+    // const names = item.map((i: any) => i.name);
+    // console.log('List of movie names: ', names)
   };
 
   const getCurrentMoviesHome = async () => {

@@ -37,7 +37,7 @@ const FavoriteScreen = ({ navigation }: any) => {
       <View style={{ flexDirection: 'column', alignItems: 'center' }}>
         <Image
           source={{ uri: item.poster }}
-          style={{ width: "100%", height: 225, marginRight: 10 }}
+          style={{ width: "100%", height: 250, marginRight: 10 }}
           resizeMode='cover'
         />
         <Space height={10} />
