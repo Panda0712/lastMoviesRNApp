@@ -30,6 +30,7 @@ const MovieDetails = ({ navigation, route }: any) => {
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [activeEpisode, setActiveEpisode] = useState('');
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const [likesCount, setLikesCount] = useState(0);
   const userId = auth().currentUser?.uid;
 
 
@@ -66,6 +67,41 @@ const MovieDetails = ({ navigation, route }: any) => {
     setMovieUrl(url);
     setIsPlaying(true);
   };
+
+  const fetchLikesCount = async () => {
+    try {
+      const movieRef = firestore().collection('movies').doc(movieSlug);
+      const movieDoc = await movieRef.get();
+
+      if (movieDoc.exists) {
+        setLikesCount(movieDoc.data()?.likesCount || 0);
+      }
+    } catch (error) {
+      console.log('error fetching like: ', error);
+    }
+  };
+
+  useEffect(() => {
+    if (movieSlug) {
+      handleGetMoviesInfo(movieSlug.toString());
+      fetchLikesCount();
+    }
+  }, [movieSlug]);
+
+  const handleLike = async () => {
+    try {
+      const movieRef = firestore().collection('movies').doc(movieSlug);
+      const movieDoc = await movieRef.get();
+
+      if (movieDoc.exists) {
+        const newLikesCount = (movieDoc.data()?.likesCount || 0) + 1;
+        await movieRef.update({ likesCount: newLikesCount });
+        setLikesCount(newLikesCount);
+      }
+    } catch (error) {
+      console.log('error updating likes: ', error);
+    }
+  }
 
   const handleGetMoviesInfo = async (slug: string) => {
     const data: any = await getSpecificMovieDetails(slug);
@@ -151,6 +187,7 @@ const MovieDetails = ({ navigation, route }: any) => {
   useEffect(() => {
     fetchFavorites(userId);
   }, [])
+
 
   const toggleFavoriteMovie = async (
     userId: string | undefined,
@@ -353,7 +390,7 @@ const MovieDetails = ({ navigation, route }: any) => {
             <TouchableOpacity>
               <AntDesign name="heart" size={30} color={colors.white} />
             </TouchableOpacity>
-            <TextComponent size={sizes.text} color={colors.white} text="0" />
+            <TextComponent size={sizes.text} color={colors.white} text={likesCount.toString()} />
           </Row>
           <Space width={36} />
           <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
@@ -379,6 +416,7 @@ const MovieDetails = ({ navigation, route }: any) => {
                   text="Chia sẻ"
                 />
               </Row>
+            </TouchableOpacity>
           </Row>
           <Space height={8} />
           <Row
@@ -581,8 +619,9 @@ const MovieDetails = ({ navigation, route }: any) => {
               </Section>
             )}
           </Row>
+        </Row>
       </Section>
-    </Container>
+    </Container >
   );
 };
 
