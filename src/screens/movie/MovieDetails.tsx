@@ -127,6 +127,10 @@ const MovieDetails = ({ navigation, route }: any) => {
     }
   }
 
+  useEffect(() => {
+    fetchFavorites(userId);
+  }, [])
+
   const toggleFavoriteMovie = async (
     userId: string | undefined,
     movieTitle: string,
