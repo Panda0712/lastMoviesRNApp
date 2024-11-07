@@ -19,6 +19,7 @@ import { MoviesInfo, Reviews } from '../../constants/models';
 import { sizes } from '../../constants/sizes';
 import { getSpecificMovieDetails } from '../../lib/actions';
 import { parseTime } from '../../utils/helpers';
+import { handleLike } from '../../screens/favorite/FavoriteScreen'
 
 const MovieDetails = ({ navigation, route }: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -86,21 +87,6 @@ const MovieDetails = ({ navigation, route }: any) => {
       fetchLikesCount();
     }
   }, [movieSlug]);
-
-  const handleLike = async () => {
-    try {
-      const movieRef = firestore().collection('movies').doc(movieSlug);
-      const movieDoc = await movieRef.get();
-
-      if (movieDoc.exists) {
-        const newLikesCount = (movieDoc.data()?.likesCount || 0) + 1;
-        await movieRef.update({ likesCount: newLikesCount });
-        setLikesCount(newLikesCount);
-      }
-    } catch (error) {
-      console.log('error updating likes: ', error);
-    }
-  }
 
   const handleGetMoviesInfo = async (slug: string) => {
     const data: any = await getSpecificMovieDetails(slug);
@@ -253,6 +239,29 @@ const MovieDetails = ({ navigation, route }: any) => {
     }
   };
 
+  // const handlePressActions = () => {
+  // toggleFavoriteMovie(
+  //   userId,
+  //   movie.name,
+  //   movie.slug,
+  //   movie.original_name,
+  //   movie.thumb_url,
+  //   movie.poster_url,
+  //   movie.created,
+  //   movie.modified,
+  //   movie.description,
+  //   movie.total_episodes,
+  //   movie.current_episode,
+  //   movie.time,
+  //   movie.quality,
+  //   movie.language,
+  //   movie.director,
+  //   movie.casts
+  // );
+
+  //   handleLike(userId, movie.slug);
+  // };
+
   return (
     <Container style={{ backgroundColor: colors.black }}>
       <Section
@@ -333,24 +342,27 @@ const MovieDetails = ({ navigation, route }: any) => {
           />
           <Space width={8} />
           <TouchableOpacity onPress={() => {
-            toggleFavoriteMovie(
-              userId,
-              movie.name,
-              movie.slug,
-              movie.original_name,
-              movie.thumb_url,
-              movie.poster_url,
-              movie.created,
-              movie.modified,
-              movie.description,
-              movie.total_episodes,
-              movie.current_episode,
-              movie.time,
-              movie.quality,
-              movie.language,
-              movie.director,
-              movie.casts
-            )
+            {
+              toggleFavoriteMovie(
+                userId,
+                movie.name,
+                movie.slug,
+                movie.original_name,
+                movie.thumb_url,
+                movie.poster_url,
+                movie.created,
+                movie.modified,
+                movie.description,
+                movie.total_episodes,
+                movie.current_episode,
+                movie.time,
+                movie.quality,
+                movie.language,
+                movie.director,
+                movie.casts
+              );
+              handleLike(movie.name, userId);
+            }
           }}>
             <AntDesign name="heart" size={sizes.icon} color={favorites[movie.name] ? colors.red : colors.white} />
           </TouchableOpacity>
