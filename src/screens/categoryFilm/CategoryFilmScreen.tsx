@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Row, Section, Space} from '@bsdaoquang/rncomponent';
-import React from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';

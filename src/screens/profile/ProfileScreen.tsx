@@ -1,14 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
-import {sizes} from '../../constants/sizes';
 import {fontFamilies} from '../../constants/fontFamilies';
+import {sizes} from '../../constants/sizes';
 
 const ProfileScreen = ({navigation}: any) => {
   const [isExpanded, setIsExpanded] = useState(false);

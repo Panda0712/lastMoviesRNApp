@@ -33,7 +33,7 @@ const MovieDetails = ({navigation, route}: any) => {
   const [likesCount, setLikesCount] = useState(0);
   const userId = auth().currentUser?.uid;
 
-  const { movie }: any = route.params;
+  const {movie}: any = route.params;
   const user = auth().currentUser;
   const movieSlug = movie.slug;
   const listEpisodes = moviesInfo[0]?.items;
@@ -66,26 +66,6 @@ const MovieDetails = ({navigation, route}: any) => {
     setMovieUrl(url);
     setIsPlaying(true);
   };
-
-  useEffect(() => {
-    const fetchLikesCount = async () => {
-      try {
-        const movieRef = firestore().collection('movies').doc(movie.name);
-        const movieDoc = await movieRef.get();
-
-        if (movieDoc.exists) {
-          const likes = movieDoc.data()?.likes || [];
-          setLikesCount(likes.length);
-        }
-      } catch (error) {
-        console.error('Error fetching likes count: ', error);
-      }
-    };
-
-    fetchLikesCount();
-  }, [movie.name]);
-
-
 
   const handleGetMoviesInfo = async (slug: string) => {
     const data: any = await getSpecificMovieDetails(slug);
@@ -142,6 +122,24 @@ const MovieDetails = ({navigation, route}: any) => {
     }
     setCommentValue('');
   };
+
+  useEffect(() => {
+    const fetchLikesCount = async () => {
+      try {
+        const movieRef = firestore().collection('movies').doc(movie.name);
+        const movieDoc = await movieRef.get();
+
+        if (movieDoc.exists) {
+          const likes = movieDoc.data()?.likes || [];
+          setLikesCount(likes.length);
+        }
+      } catch (error) {
+        console.error('Error fetching likes count: ', error);
+      }
+    };
+
+    fetchLikesCount();
+  }, [movie.name]);
 
   useEffect(() => {
     handleGetComments();
@@ -334,12 +332,15 @@ const MovieDetails = ({navigation, route}: any) => {
                 movie.quality,
                 movie.language,
                 movie.director,
-                movie.casts
+                movie.casts,
               );
               handleLike(movie.name, userId);
-            }}
-          >
-            <AntDesign name="heart" size={sizes.icon} color={favorites[movie.name] ? colors.red : colors.white} />
+            }}>
+            <AntDesign
+              name="heart"
+              size={sizes.icon}
+              color={favorites[movie.name] ? colors.red : colors.white}
+            />
           </TouchableOpacity>
         </Row>
         <Space height={8} />
@@ -430,7 +431,11 @@ const MovieDetails = ({navigation, route}: any) => {
               <TouchableOpacity>
                 <AntDesign name="heart" size={30} color={colors.white} />
               </TouchableOpacity>
-              <TextComponent size={sizes.text} color={colors.white} text={`${likesCount}`} />
+              <TextComponent
+                size={sizes.text}
+                color={colors.white}
+                text={`${likesCount}`}
+              />
             </Row>
 
             <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>

@@ -3,14 +3,14 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
+  ActivityIndicator,
+  Dimensions,
   FlatList,
   Image,
-  TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
   StyleSheet,
-  Dimensions,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container} from '../../components';
@@ -67,12 +67,6 @@ const MovieListScreen: React.FC<MovieListProps> = ({route}) => {
     }
   };
 
-  useEffect(() => {
-    setData([]);
-    setCurrentPage(1);
-    fetchMovies(1, false);
-  }, [slug]);
-
   const handleLoadMore = async () => {
     if (!loading) {
       const success = await fetchMovies(currentPage + 1);
@@ -110,6 +104,12 @@ const MovieListScreen: React.FC<MovieListProps> = ({route}) => {
       </View>
     );
   };
+
+  useEffect(() => {
+    setData([]);
+    setCurrentPage(1);
+    fetchMovies(1, false);
+  }, [slug]);
 
   return (
     <Container

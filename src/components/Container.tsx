@@ -1,8 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Row} from '@bsdaoquang/rncomponent';
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 import {
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,

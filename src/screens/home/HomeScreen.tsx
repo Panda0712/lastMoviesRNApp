@@ -51,6 +51,7 @@ const HomeScreen = ({navigation}: any) => {
   const [sexMovies, setSexMovies] = useState<Movie[]>([]);
   const [favorites, setFavorites] = useState<{[key: string]: boolean}>({});
   const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
+
   const userId = auth().currentUser?.uid;
 
   const getMovies = async () => {

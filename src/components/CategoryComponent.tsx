@@ -2,7 +2,6 @@
 import {Row} from '@bsdaoquang/rncomponent';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {colors} from '../constants/colors';
 import {fontFamilies} from '../constants/fontFamilies';

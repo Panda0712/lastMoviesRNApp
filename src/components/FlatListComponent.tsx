@@ -2,7 +2,6 @@
 import {Row} from '@bsdaoquang/rncomponent';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React from 'react';
 import {FlatList, Image} from 'react-native';
 import {Movie} from '../constants/models';
 

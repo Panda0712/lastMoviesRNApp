@@ -1,6 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Input, Row, Space} from '@bsdaoquang/rncomponent';
-import React, {useEffect, useState} from 'react';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -8,16 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
-import auth from '@react-native-firebase/auth';
 import {Auth} from '../../utils/handleAuth';
-import Toast from 'react-native-toast-message';
 import {validateEmail} from '../../utils/helpers';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const initialValue = {
   username: '',

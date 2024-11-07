@@ -1,12 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import {Button, Row} from '@bsdaoquang/rncomponent';
 import {Image, ImageBackground, StatusBar, View} from 'react-native';
 import Swiper from 'react-native-swiper';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
-import {sizes} from '../../constants/sizes';
 import {fontFamilies} from '../../constants/fontFamilies';
-import {Button, Row} from '@bsdaoquang/rncomponent';
+import {sizes} from '../../constants/sizes';
 
 const SwiperScreen = ({navigation}: any) => {
   return (

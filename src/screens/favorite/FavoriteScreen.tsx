@@ -4,13 +4,10 @@ import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
 import {Alert, FlatList, Image, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { fontFamilies } from '../../constants/fontFamilies';
-import { firebase } from '@react-native-firebase/storage';
-import UserScreen from '../user/UserScreen';
-import { Container, TextComponent } from '../../components';
-import { colors } from '../../constants/colors';
-import { sizes } from '../../constants/sizes';
-
+import {Container, TextComponent} from '../../components';
+import {colors} from '../../constants/colors';
+import {fontFamilies} from '../../constants/fontFamilies';
+import {sizes} from '../../constants/sizes';
 
 interface FavoriteItem {
   name: string;
@@ -30,16 +27,18 @@ interface FavoriteItem {
   casts: string;
 }
 
-export const handleLike = async (movieId: string, userId: string | undefined) => {
+export const handleLike = async (
+  movieId: string,
+  userId: string | undefined,
+) => {
   if (!userId) return;
 
   const movieRef = firestore().collection('movies').doc(movieId);
   try {
     const movieDoc = await movieRef.get();
 
-
     if (!movieDoc.exists) {
-      await movieRef.set({ likes: [] });
+      await movieRef.set({likes: []});
     }
 
     const likes = movieDoc.data()?.likes || [];
@@ -55,7 +54,6 @@ export const handleLike = async (movieId: string, userId: string | undefined) =>
         likes: firestore.FieldValue.arrayUnion(userId),
       });
     }
-
   } catch (error) {
     console.error('Error updating likes: ', error);
   }
@@ -74,11 +72,6 @@ const FavoriteScreen = ({navigation}: any) => {
       setFavorites(existingFavorites);
     }
   };
-
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
-
 
   const removeFavorite = async (name: string) => {
     if (!userId) return;
@@ -136,6 +129,10 @@ const FavoriteScreen = ({navigation}: any) => {
       </View>
     </TouchableOpacity>
   );
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
 
   return (
     <Container

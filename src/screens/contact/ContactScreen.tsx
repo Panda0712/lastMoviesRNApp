@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Input, Space} from '@bsdaoquang/rncomponent';
 import firestore from '@react-native-firebase/firestore';
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Ionicons from 'react-native-vector-icons/Ionicons';

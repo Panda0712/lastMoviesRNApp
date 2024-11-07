@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import Ionicons from 'react-native-vector-icons/Ionicons';
