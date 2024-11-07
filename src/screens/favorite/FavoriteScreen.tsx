@@ -26,6 +26,35 @@ interface FavoriteItem {
   casts: string;
 }
 
+export const handleLike = async (
+  movieId: string,
+  userId: string | undefined,
+) => {
+  const movieRef = firestore().collection('movies').doc(movieId);
+  try {
+    await firestore().runTransaction(async transaction => {
+      const movieDoc = await transaction.get(movieRef);
+
+      if (movieDoc.exists) {
+        const likes = movieDoc.data()?.likes || [];
+
+        if (likes.includes(userId)) {
+          transaction.update(movieRef, {
+            movieId: movieId,
+            likes: firestore.FieldValue.arrayRemove(userId),
+          });
+        } else {
+          transaction.update(movieRef, {
+            likes: firestore.FieldValue.arrayUnion(userId),
+          });
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error updating likes: ', error);
+  }
+};
+
 const FavoriteScreen = ({navigation}: any) => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const userId = auth().currentUser?.uid;
