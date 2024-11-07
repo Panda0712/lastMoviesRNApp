@@ -26,6 +26,7 @@ import { sizes } from '../../constants/sizes';
 import { getCategoryFilmMovies } from '../../lib/actions';
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import { handleLike } from '../../screens/favorite/FavoriteScreen'
 
 const { width } = Dimensions.get('window');
 const COLUMN_COUNT = 3;
@@ -238,7 +239,8 @@ const CategoryDetails = ({ navigation, route }: any) => {
                         item.language,
                         item.director,
                         item.casts
-                      )
+                      );
+                      handleLike(item.name, userId);
                     }}>
                       <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign

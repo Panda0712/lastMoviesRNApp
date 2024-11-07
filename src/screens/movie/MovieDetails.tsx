@@ -20,6 +20,7 @@ import { sizes } from '../../constants/sizes';
 import { getSpecificMovieDetails } from '../../lib/actions';
 import { parseTime } from '../../utils/helpers';
 import { handleLike } from '../../screens/favorite/FavoriteScreen'
+// import { movieLikes } from '../../screens/favorite/FavoriteScreen'
 
 const MovieDetails = ({ navigation, route }: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -32,7 +33,6 @@ const MovieDetails = ({ navigation, route }: any) => {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const [likesCount, setLikesCount] = useState(0);
   const userId = auth().currentUser?.uid;
-
 
   const { movie }: any = route.params;
   const user = auth().currentUser;
@@ -68,25 +68,39 @@ const MovieDetails = ({ navigation, route }: any) => {
     setIsPlaying(true);
   };
 
-  const fetchLikesCount = async () => {
-    try {
-      const movieRef = firestore().collection('movies').doc(movieSlug);
-      const movieDoc = await movieRef.get();
+  // const fetchLikesCount = async () => {
+  //   try {
+  //     const movieRef = firestore().collection('movies').doc(movieSlug);
+  //     const movieDoc = await movieRef.get();
 
-      if (movieDoc.exists) {
-        setLikesCount(movieDoc.data()?.likesCount || 0);
-      }
-    } catch (error) {
-      console.log('error fetching like: ', error);
-    }
-  };
+  //     if (movieDoc.exists) {
+  //       setLikesCount(movieDoc.data()?.likesCount || 0);
+  //     }
+  //   } catch (error) {
+  //     console.log('error fetching like: ', error);
+  //   }
+  // };
 
+  // 
   useEffect(() => {
-    if (movieSlug) {
-      handleGetMoviesInfo(movieSlug.toString());
-      fetchLikesCount();
-    }
-  }, [movieSlug]);
+    const fetchLikesCount = async () => {
+      try {
+        const movieRef = firestore().collection('movies').doc(movie.name);
+        const movieDoc = await movieRef.get();
+
+        if (movieDoc.exists) {
+          const likes = movieDoc.data()?.likes || [];
+          setLikesCount(likes.length);
+        }
+      } catch (error) {
+        console.error('Error fetching likes count: ', error);
+      }
+    };
+
+    fetchLikesCount();
+  }, [movie.name]);
+
+
 
   const handleGetMoviesInfo = async (slug: string) => {
     const data: any = await getSpecificMovieDetails(slug);
@@ -239,29 +253,6 @@ const MovieDetails = ({ navigation, route }: any) => {
     }
   };
 
-  // const handlePressActions = () => {
-  // toggleFavoriteMovie(
-  //   userId,
-  //   movie.name,
-  //   movie.slug,
-  //   movie.original_name,
-  //   movie.thumb_url,
-  //   movie.poster_url,
-  //   movie.created,
-  //   movie.modified,
-  //   movie.description,
-  //   movie.total_episodes,
-  //   movie.current_episode,
-  //   movie.time,
-  //   movie.quality,
-  //   movie.language,
-  //   movie.director,
-  //   movie.casts
-  // );
-
-  //   handleLike(userId, movie.slug);
-  // };
-
   return (
     <Container style={{ backgroundColor: colors.black }}>
       <Section
@@ -341,8 +332,8 @@ const MovieDetails = ({ navigation, route }: any) => {
             text={movie.name}
           />
           <Space width={8} />
-          <TouchableOpacity onPress={() => {
-            {
+          <TouchableOpacity
+            onPress={() => {
               toggleFavoriteMovie(
                 userId,
                 movie.name,
@@ -362,8 +353,8 @@ const MovieDetails = ({ navigation, route }: any) => {
                 movie.casts
               );
               handleLike(movie.name, userId);
-            }
-          }}>
+            }}
+          >
             <AntDesign name="heart" size={sizes.icon} color={favorites[movie.name] ? colors.red : colors.white} />
           </TouchableOpacity>
         </Row>
@@ -445,7 +436,7 @@ const MovieDetails = ({ navigation, route }: any) => {
               <TouchableOpacity>
                 <AntDesign name="heart" size={30} color={colors.white} />
               </TouchableOpacity>
-              <TextComponent size={sizes.text} color={colors.white} text={likesCount.toString()} />
+              <TextComponent size={sizes.text} color={colors.white} text={`${likesCount}`} />
             </Row>
 
             <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>

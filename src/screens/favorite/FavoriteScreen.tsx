@@ -8,6 +8,7 @@ import { Container, TextComponent } from '../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fontFamilies } from '../../constants/fontFamilies';
 import { firebase } from '@react-native-firebase/storage';
+import UserScreen from '../user/UserScreen';
 
 
 interface FavoriteItem {
@@ -29,31 +30,34 @@ interface FavoriteItem {
 }
 
 export const handleLike = async (movieId: string, userId: string | undefined) => {
+  if (!userId) return;
+
   const movieRef = firestore().collection('movies').doc(movieId);
   try {
-    await firestore().runTransaction(async (transaction) => {
-      const movieDoc = await transaction.get(movieRef);
+    const movieDoc = await movieRef.get();
 
-      if (movieDoc.exists) {
-        const likes = movieDoc.data()?.likes || [];
+    if (!movieDoc.exists) {
+      await movieRef.set({ likes: [] });
+    }
 
-        if (likes.includes(userId)) {
-          transaction.update(movieRef, {
-            movieId: movieId,
-            likes: firestore.FieldValue.arrayRemove(userId),
-          });
-        } else {
-          transaction.update(movieRef, {
-            likes: firestore.FieldValue.arrayUnion(userId),
-          });
-        }
-      }
-    });
+    const likes = movieDoc.data()?.likes || [];
+
+    const isUserLiked = likes.includes(userId);
+
+    if (isUserLiked) {
+      await movieRef.update({
+        likes: firestore.FieldValue.arrayRemove(userId),
+      });
+    } else {
+      await movieRef.update({
+        likes: firestore.FieldValue.arrayUnion(userId),
+      });
+    }
+
   } catch (error) {
     console.error("Error updating likes: ", error);
   }
 };
-
 
 const FavoriteScreen = ({ navigation }: any) => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
@@ -72,6 +76,7 @@ const FavoriteScreen = ({ navigation }: any) => {
   useEffect(() => {
     fetchFavorites();
   }, []);
+
 
   const removeFavorite = async (name: string) => {
     if (!userId) return;

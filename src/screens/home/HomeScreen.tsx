@@ -20,6 +20,7 @@ import {
   getSpecificCategoryMovies,
   getStreamingMovies,
 } from '../../lib/actions';
+import { handleLike } from '../../screens/favorite/FavoriteScreen'
 
 const HomeScreen = ({ navigation }: any) => {
   const [streamingMovies, setStreamingMovies] = useState<Movie[]>([]);
@@ -220,8 +221,9 @@ const HomeScreen = ({ navigation }: any) => {
                     }}
                     alignItems="center">
                     <TouchableOpacity
-                      onPress={() =>
+                      onPress={() => {
                         toggleFavoriteMovie(
+
                           userId,
                           item.name,
                           item.slug,
@@ -238,7 +240,9 @@ const HomeScreen = ({ navigation }: any) => {
                           item.language,
                           item.director,
                           item.casts
-                        )
+                        );
+                        handleLike(item.name, userId);
+                      }
                       }>
                       <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
