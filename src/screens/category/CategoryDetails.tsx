@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
-import React, {useEffect, useState} from 'react';
+import { Button, Row, Section, Space } from '@bsdaoquang/rncomponent';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -17,27 +17,114 @@ import Swiper from 'react-native-swiper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Container, TextComponent} from '../../components';
+import { Container, TextComponent } from '../../components';
 import CategoryComponent from '../../components/CategoryComponent';
-import {colors} from '../../constants/colors';
-import {fontFamilies} from '../../constants/fontFamilies';
-import {Movie} from '../../constants/models';
-import {sizes} from '../../constants/sizes';
-import {getCategoryFilmMovies} from '../../lib/actions';
+import { colors } from '../../constants/colors';
+import { fontFamilies } from '../../constants/fontFamilies';
+import { Movie } from '../../constants/models';
+import { sizes } from '../../constants/sizes';
+import { getCategoryFilmMovies } from '../../lib/actions';
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const COLUMN_COUNT = 3;
 const SPACING = 10;
 const ITEM_WIDTH = (width - (COLUMN_COUNT + 1) * SPACING) / COLUMN_COUNT;
 const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
 
-const CategoryDetails = ({navigation, route}: any) => {
+const CategoryDetails = ({ navigation, route }: any) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const {category, slug, text} = route.params;
+  const { category, slug, text } = route.params;
+  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const userId = auth().currentUser?.uid;
+
+  const fetchFavorites = async (userId: string | undefined) => {
+    if (!userId) return;
+    const userRef = firestore().collection('favorites').doc(userId);
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      const existingFavorites = userDoc.data()?.favorites || [];
+      const favoriteMap: { [key: string]: boolean } = {};
+      existingFavorites.forEach((movie: any) => {
+        favoriteMap[movie.name] = true;
+      });
+      setFavorites(favoriteMap);
+    }
+  };
+
+  const toggleFavoriteMovie = async (
+    userId: string | undefined,
+    name: string,
+    slug: string,
+    original_name: string,
+    thumb_url: string,
+    poster_url: string,
+    created: string,
+    modified: string,
+    description: string,
+    total_episodes: number,
+    current_episode: string,
+    time: string,
+    quality: string,
+    language: string,
+    director: string,
+    casts: string,
+  ) => {
+    try {
+      const userRef = firestore().collection('favorites').doc(userId);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+        await userRef.set({ favorites: [] });
+      }
+
+      const existingFavorites = userDoc.data()?.favorites || [];
+      const isMovieExists = existingFavorites.some(
+        (movie: any) => movie.name === name,
+      );
+
+      const newFavorite = {
+        name: name,
+        slug: slug,
+        original_name: original_name,
+        thumb_url: thumb_url,
+        poster_url: poster_url,
+        created: created,
+        modified: modified,
+        description: description,
+        total_episodes: total_episodes,
+        current_episode: current_episode,
+        time: time,
+        quality: quality,
+        language: language,
+        director: director,
+        casts: casts,
+      };
+
+      if (isMovieExists) {
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayRemove(newFavorite),
+        });
+        setFavorites(prev => ({ ...prev, [name]: false }));
+      } else {
+        await userRef.update({
+          favorites: firestore.FieldValue.arrayUnion({ ...newFavorite }),
+        });
+        setFavorites(prev => ({ ...prev, [name]: true }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFavorites(userId);
+  }, []);
 
   const handleGetMovies = async () => {
     const items = await getCategoryFilmMovies(category, slug, 1);
@@ -80,12 +167,12 @@ const CategoryDetails = ({navigation, route}: any) => {
     await fetchMovies(1, false);
   };
 
-  const renderMovie = ({item}: {item: Movie}) => (
+  const renderMovie = ({ item }: { item: Movie }) => (
     <TouchableOpacity
       style={styles.movieItem}
-      onPress={() => navigation.navigate('MovieDetails', {movie: item})}>
+      onPress={() => navigation.navigate('MovieDetails', { movie: item })}>
       <Image
-        source={{uri: item.thumb_url}}
+        source={{ uri: item.thumb_url }}
         style={styles.movieImage}
         resizeMode="cover"
       />
@@ -113,12 +200,12 @@ const CategoryDetails = ({navigation, route}: any) => {
         </Row>
       </Section>
       <View>
-        <Swiper showsPagination={false} style={{height: 380}}>
+        <Swiper showsPagination={false} style={{ height: 380 }}>
           {movies.map((item, index) => (
-            <View key={index} style={{width: sizes.width}}>
+            <View key={index} style={{ width: sizes.width }}>
               <ImageBackground
-                source={{uri: item.poster_url}}
-                style={{width: '100%', height: 380}}>
+                source={{ uri: item.poster_url }}
+                style={{ width: '100%', height: 380 }}>
                 <View
                   style={{
                     position: 'absolute',
@@ -129,16 +216,37 @@ const CategoryDetails = ({navigation, route}: any) => {
                     backgroundColor: 'rgba(0,0,0,0.4)',
                   }}
                 />
-                <Row styles={{height: '100%'}} alignItems="flex-end">
+                <Row styles={{ height: '100%' }} alignItems="flex-end">
                   <Row
-                    styles={{width: '100%', height: 80, marginBottom: 4}}
+                    styles={{ width: '100%', height: 80, marginBottom: 4 }}
                     alignItems="center">
-                    <TouchableOpacity>
-                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                    <TouchableOpacity onPress={() => {
+                      toggleFavoriteMovie(
+                        userId,
+                        item.name,
+                        item.slug,
+                        item.original_name,
+                        item.thumb_url,
+                        item.poster_url,
+                        item.created,
+                        item.modified,
+                        item.description,
+                        item.total_episodes,
+                        item.current_episode,
+                        item.time,
+                        item.quality,
+                        item.language,
+                        item.director,
+                        item.casts
+                      )
+                    }}>
+                      <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
-                          name="hearto"
+                          name="heart"
                           size={sizes.icon}
-                          color={colors.white}
+                          color={
+                            favorites[item.name] ? colors.red : colors.white
+                          }
                         />
                         <TextComponent color={colors.white} text="Yêu thích" />
                       </Row>
@@ -153,7 +261,7 @@ const CategoryDetails = ({navigation, route}: any) => {
                         />
                       }
                       radius={6}
-                      styles={{paddingVertical: 2, paddingHorizontal: 16}}
+                      styles={{ paddingVertical: 2, paddingHorizontal: 16 }}
                       textStyleProps={{
                         fontFamily: fontFamilies.firaSemiBold,
                         fontSize: sizes.text,
@@ -162,15 +270,15 @@ const CategoryDetails = ({navigation, route}: any) => {
                       color={colors.white}
                       title="Xem ngay"
                       onPress={() =>
-                        navigation.navigate('MovieDetails', {movie: item})
+                        navigation.navigate('MovieDetails', { movie: item })
                       }
                     />
                     <Space width={28} />
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('MovieDetails', {movie: item})
+                        navigation.navigate('MovieDetails', { movie: item })
                       }>
-                      <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                      <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
                           name="infocirlceo"
                           size={sizes.icon}
@@ -216,7 +324,7 @@ const CategoryDetails = ({navigation, route}: any) => {
   }, [slug]);
 
   return (
-    <Container isScroll={false} style={{backgroundColor: colors.black}}>
+    <Container isScroll={false} style={{ backgroundColor: colors.black }}>
       <FlatList
         data={allMovies}
         renderItem={renderMovie}

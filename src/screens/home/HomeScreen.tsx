@@ -13,8 +13,8 @@ import { colors } from '../../constants/colors';
 import { fontFamilies } from '../../constants/fontFamilies';
 import { Movie } from '../../constants/models';
 import { sizes } from '../../constants/sizes';
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import {
   getCurrentMovies,
   getSpecificCategoryMovies,
@@ -30,23 +30,20 @@ const HomeScreen = ({ navigation }: any) => {
   const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
   const [tvShows, setTVShows] = useState<Movie[]>([]);
   const [sexMovies, setSexMovies] = useState<Movie[]>([]);
-  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({})
+  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
   const userId = auth().currentUser?.uid;
 
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
-    // const names = item.map((i: any) => i.name);
-    // console.log('List of movie names: ', names)
   };
 
   const getCurrentMoviesHome = async () => {
     try {
       const item: any = await getCurrentMovies();
       setCurrentMovies(item);
-    }
-    catch (error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -58,7 +55,7 @@ const HomeScreen = ({ navigation }: any) => {
       const existingFavorites = userDoc.data()?.favorites || [];
       const favoriteMap: { [key: string]: boolean } = {};
       existingFavorites.forEach((movie: any) => {
-        favoriteMap[movie.title] = true;
+        favoriteMap[movie.name] = true;
       });
       setFavorites(favoriteMap);
     }
@@ -66,9 +63,21 @@ const HomeScreen = ({ navigation }: any) => {
 
   const toggleFavoriteMovie = async (
     userId: string | undefined,
-    movieTitle: string,
-    poster: string,
-    episode: string,
+    name: string,
+    slug: string,
+    original_name: string,
+    thumb_url: string,
+    poster_url: string,
+    created: string,
+    modified: string,
+    description: string,
+    total_episodes: number,
+    current_episode: string,
+    time: string,
+    quality: string,
+    language: string,
+    director: string,
+    casts: string,
   ) => {
     try {
       const userRef = firestore().collection('favorites').doc(userId);
@@ -80,31 +89,42 @@ const HomeScreen = ({ navigation }: any) => {
 
       const existingFavorites = userDoc.data()?.favorites || [];
       const isMovieExists = existingFavorites.some(
-        (movie: any) => movie.title === movieTitle
+        (movie: any) => movie.name === name,
       );
 
       const newFavorite = {
-        title: movieTitle,
-        poster: poster,
-        episode: episode,
+        name: name,
+        slug: slug,
+        original_name: original_name,
+        thumb_url: thumb_url,
+        poster_url: poster_url,
+        created: created,
+        modified: modified,
+        description: description,
+        total_episodes: total_episodes,
+        current_episode: current_episode,
+        time: time,
+        quality: quality,
+        language: language,
+        director: director,
+        casts: casts,
       };
 
       if (isMovieExists) {
         await userRef.update({
-          favorites: firestore.FieldValue.arrayRemove(newFavorite)
+          favorites: firestore.FieldValue.arrayRemove(newFavorite),
         });
-        setFavorites((prev) => ({ ...prev, [movieTitle]: false }));
+        setFavorites(prev => ({ ...prev, [name]: false }));
       } else {
         await userRef.update({
-          favorites: firestore.FieldValue.arrayUnion(newFavorite)
+          favorites: firestore.FieldValue.arrayUnion({ ...newFavorite }),
         });
-        setFavorites((prev) => ({ ...prev, [movieTitle]: true }));
+        setFavorites(prev => ({ ...prev, [name]: true }));
       }
     } catch (error) {
       console.log(error);
     }
   };
-
 
   async function getCurrentSeriesMovies() {
     const item: any = await getSpecificCategoryMovies('phim-bo');
@@ -199,12 +219,34 @@ const HomeScreen = ({ navigation }: any) => {
                       marginBottom: 4,
                     }}
                     alignItems="center">
-                    <TouchableOpacity onPress={() => toggleFavoriteMovie(userId, item.name, item.poster_url, item.current_episode)}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        toggleFavoriteMovie(
+                          userId,
+                          item.name,
+                          item.slug,
+                          item.original_name,
+                          item.thumb_url,
+                          item.poster_url,
+                          item.created,
+                          item.modified,
+                          item.description,
+                          item.total_episodes,
+                          item.current_episode,
+                          item.time,
+                          item.quality,
+                          item.language,
+                          item.director,
+                          item.casts
+                        )
+                      }>
                       <Row styles={{ flexDirection: 'column', marginBottom: 12 }}>
                         <AntDesign
                           name="heart"
                           size={sizes.icon}
-                          color={favorites[item.name] ? colors.red : colors.white}
+                          color={
+                            favorites[item.name] ? colors.red : colors.white
+                          }
                         />
                         <TextComponent color={colors.white} text="Yêu thích" />
                       </Row>

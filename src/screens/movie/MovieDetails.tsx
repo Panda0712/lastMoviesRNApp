@@ -19,7 +19,6 @@ import { MoviesInfo, Reviews } from '../../constants/models';
 import { sizes } from '../../constants/sizes';
 import { getSpecificMovieDetails } from '../../lib/actions';
 import { parseTime } from '../../utils/helpers';
-import { set } from '@react-native-firebase/database';
 
 const MovieDetails = ({ navigation, route }: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -178,7 +177,7 @@ const MovieDetails = ({ navigation, route }: any) => {
       const existingFavorites = userDoc.data()?.favorites || []
       const favoriteMap: { [key: string]: boolean } = {};
       existingFavorites.forEach((movie: any) => {
-        favoriteMap[movie.title] = true;
+        favoriteMap[movie.name] = true;
       })
       setFavorites(favoriteMap);
     }
@@ -191,9 +190,21 @@ const MovieDetails = ({ navigation, route }: any) => {
 
   const toggleFavoriteMovie = async (
     userId: string | undefined,
-    movieTitle: string,
-    poster: string,
-    episode: string,
+    name: string,
+    slug: string,
+    original_name: string,
+    thumb_url: string,
+    poster_url: string,
+    created: string,
+    modified: string,
+    description: string,
+    total_episodes: number,
+    current_episode: string,
+    time: string,
+    quality: string,
+    language: string,
+    director: string,
+    casts: string,
   ) => {
     try {
       const userRef = firestore().collection('favorites').doc(userId);
@@ -205,30 +216,42 @@ const MovieDetails = ({ navigation, route }: any) => {
 
       const existingFavorites = userDoc.data()?.favorites || [];
       const isMovieExists = existingFavorites.some(
-        (movie: any) => movie.title === movieTitle
-      )
+        (movie: any) => movie.name === name,
+      );
 
       const newFavorite = {
-        title: movieTitle,
-        poster: poster,
-        episode: episode,
-      }
+        name: name,
+        slug: slug,
+        original_name: original_name,
+        thumb_url: thumb_url,
+        poster_url: poster_url,
+        created: created,
+        modified: modified,
+        description: description,
+        total_episodes: total_episodes,
+        current_episode: current_episode,
+        time: time,
+        quality: quality,
+        language: language,
+        director: director,
+        casts: casts,
+      };
 
       if (isMovieExists) {
         await userRef.update({
-          favorites: firestore.FieldValue.arrayRemove(newFavorite)
+          favorites: firestore.FieldValue.arrayRemove(newFavorite),
         });
-        setFavorites((prev) => ({ ...prev, [movieTitle]: false }))
+        setFavorites(prev => ({ ...prev, [name]: false }));
       } else {
         await userRef.update({
-          favorites: firestore.FieldValue.arrayUnion(newFavorite)
+          favorites: firestore.FieldValue.arrayUnion({ ...newFavorite }),
         });
-        setFavorites((prev) => ({ ...prev, [movieTitle]: true }));
+        setFavorites(prev => ({ ...prev, [name]: true }));
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <Container style={{ backgroundColor: colors.black }}>
@@ -309,7 +332,26 @@ const MovieDetails = ({ navigation, route }: any) => {
             text={movie.name}
           />
           <Space width={8} />
-          <TouchableOpacity onPress={() => toggleFavoriteMovie(userId, movie.name, movie.thumb_url, movie.current_episode)}>
+          <TouchableOpacity onPress={() => {
+            toggleFavoriteMovie(
+              userId,
+              movie.name,
+              movie.slug,
+              movie.original_name,
+              movie.thumb_url,
+              movie.poster_url,
+              movie.created,
+              movie.modified,
+              movie.description,
+              movie.total_episodes,
+              movie.current_episode,
+              movie.time,
+              movie.quality,
+              movie.language,
+              movie.director,
+              movie.casts
+            )
+          }}>
             <AntDesign name="heart" size={sizes.icon} color={favorites[movie.name] ? colors.red : colors.white} />
           </TouchableOpacity>
         </Row>

@@ -9,9 +9,21 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fontFamilies } from '../../constants/fontFamilies';
 
 interface FavoriteItem {
-  title: string;
-  poster: string;
-  episode: string;
+  name: string;
+  slug: string;
+  original_name: string;
+  thumb_url: string;
+  poster_url: string;
+  created: string;
+  modified: string;
+  description: string;
+  total_episodes: number;
+  current_episode: string;
+  time: string;
+  quality: string;
+  language: string;
+  director: string;
+  casts: string;
 }
 
 const FavoriteScreen = ({ navigation }: any) => {
@@ -32,25 +44,25 @@ const FavoriteScreen = ({ navigation }: any) => {
     fetchFavorites();
   }, []);
 
-  const removeFavorite = async (title: string) => {
+  const removeFavorite = async (name: string) => {
     if (!userId) return;
     const userRef = firestore().collection('favorites').doc(userId);
     const userDoc = await userRef.get();
     if (userDoc.exists) {
       const existingFavorites = userDoc.data()?.favorites || [];
-      const updatedFavorites = existingFavorites.filter((item: FavoriteItem) => item.title !== title);
+      const updatedFavorites = existingFavorites.filter((item: FavoriteItem) => item.name !== name);
       await userRef.update({ favorites: updatedFavorites });
       setFavorites(updatedFavorites);
     }
   };
 
-  const handleRemoveFavorite = (title: string) => {
+  const handleRemoveFavorite = (name: string) => {
     Alert.alert(
       "Xóa khỏi yêu thích",
       "Bạn có chắc chắn muốn xóa phim này khỏi danh sách yêu thích?",
       [
         { text: "Hủy", style: "cancel" },
-        { text: "Xóa", onPress: () => removeFavorite(title) }
+        { text: "Xóa", onPress: () => removeFavorite(name) }
       ]
     );
   };
@@ -59,15 +71,15 @@ const FavoriteScreen = ({ navigation }: any) => {
     <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => navigation.navigate("MovieDetails")}>
       <View style={{ flexDirection: 'column', alignItems: 'center' }}>
         <Image
-          source={{ uri: item.poster }}
+          source={{ uri: item.poster_url }}
           style={{ width: "100%", height: 250, marginRight: 10 }}
           resizeMode='cover'
         />
         <Space height={10} />
 
         <Row styles={{ justifyContent: 'space-between', width: '100%', paddingHorizontal: 10 }}>
-          <TextComponent text={item.title} color={colors.white} font={fontFamilies.firaMedium} />
-          <TouchableOpacity onPress={() => handleRemoveFavorite(item.title)}>
+          <TextComponent text={item.name} color={colors.white} font={fontFamilies.firaMedium} />
+          <TouchableOpacity onPress={() => handleRemoveFavorite(item.name)}>
             <Ionicons name="heart" size={24} color="red" />
           </TouchableOpacity>
         </Row>
@@ -89,7 +101,7 @@ const FavoriteScreen = ({ navigation }: any) => {
       <FlatList
         data={favorites}
         renderItem={renderItem}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item.name}
         showsVerticalScrollIndicator={false}
       />
     </Container>
