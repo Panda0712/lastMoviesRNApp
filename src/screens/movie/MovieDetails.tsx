@@ -421,44 +421,34 @@ const MovieDetails = ({ navigation, route }: any) => {
           />
         </Row>
         <Space height={16} />
-        <Row
-          justifyContent="flex-start"
-          styles={{
+        <View
+          style={{
             borderBottomColor: colors.black2,
             paddingBottom: 15,
             borderBottomWidth: 2,
           }}>
-          <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
-            <TouchableOpacity>
-              <AntDesign name="heart" size={30} color={colors.white} />
-            </TouchableOpacity>
-            <TextComponent size={sizes.text} color={colors.white} text={likesCount.toString()} />
-          </Row>
-          <Space width={36} />
-          <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
-            <TouchableOpacity>
-              <Entypo name="plus" size={30} color={colors.white} />
-            </TouchableOpacity>
-            <TextComponent
-              size={sizes.text}
-              color={colors.white}
-              text="Danh sách"
-            />
-          </Row>
-          <Space width={36} />
-          <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
-            <TouchableOpacity>
-              <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
-                <TouchableOpacity onPress={handleShare}>
-                  <FontAwesome name="send" size={30} color={colors.white} />
-                </TouchableOpacity>
-                <TextComponent
-                  size={sizes.text}
-                  color={colors.white}
-                  text="Chia sẻ"
-                />
-              </Row>
-            </TouchableOpacity>
+          <Space height={12} />
+          <Row justifyContent='flex-start' alignItems="center" styles={{ flexDirection: 'row', gap: 36, paddingBottom: 16, borderBottomColor: colors.black2, borderWidth: 2 }}>
+            <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
+              <TouchableOpacity>
+                <AntDesign name="heart" size={30} color={colors.white} />
+              </TouchableOpacity>
+              <TextComponent size={sizes.text} color={colors.white} text={likesCount.toString()} />
+            </Row>
+
+            <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
+              <TouchableOpacity>
+                <Entypo name="plus" size={30} color={colors.white} />
+              </TouchableOpacity>
+              <TextComponent size={sizes.text} color={colors.white} text="Danh sách" />
+            </Row>
+
+            <Row alignItems="center" styles={{ flexDirection: 'column', gap: 2 }}>
+              <TouchableOpacity onPress={handleShare}>
+                <FontAwesome name="send" size={30} color={colors.white} />
+              </TouchableOpacity>
+              <TextComponent size={sizes.text} color={colors.white} text="Chia sẻ" />
+            </Row>
           </Row>
           <Space height={8} />
           <Row
@@ -661,7 +651,7 @@ const MovieDetails = ({ navigation, route }: any) => {
               </Section>
             )}
           </Row>
-        </Row>
+        </View>
       </Section>
     </Container >
   );

@@ -7,6 +7,8 @@ import { Row, Space } from '@bsdaoquang/rncomponent';
 import { Container, TextComponent } from '../../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fontFamilies } from '../../constants/fontFamilies';
+import { firebase } from '@react-native-firebase/storage';
+
 
 interface FavoriteItem {
   name: string;
@@ -101,7 +103,7 @@ const FavoriteScreen = ({ navigation }: any) => {
       <FlatList
         data={favorites}
         renderItem={renderItem}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.slug}
         showsVerticalScrollIndicator={false}
       />
     </Container>
