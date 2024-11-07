@@ -80,16 +80,18 @@ const AboutScreen = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
 
-      <TextComponent
-        text="Chính sách bảo mật"
-        color={colors.white}
-        styles={styless.policyText}
-      />
-      <TextComponent
-        text="Điều khoản dịch vụ"
-        color={colors.white}
-        styles={styless.policyText}
-      />
+      <View>
+        <TextComponent
+          text="Chính sách bảo mật"
+          color={colors.white}
+          styles={styless.policyText}
+        />
+        <TextComponent
+          text="Điều khoản dịch vụ"
+          color={colors.white}
+          styles={styless.policyText}
+        />
+      </View>
     </Container>
   );
 };

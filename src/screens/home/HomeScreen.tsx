@@ -1,6 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import { Button, Row, Section, Space } from '@bsdaoquang/rncomponent';
-import React, { useEffect, useState } from 'react';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { useEffect, useState } from 'react';
 import { Image, ImageBackground, TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -13,14 +15,30 @@ import { colors } from '../../constants/colors';
 import { fontFamilies } from '../../constants/fontFamilies';
 import { Movie } from '../../constants/models';
 import { sizes } from '../../constants/sizes';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import {
   getCurrentMovies,
   getSpecificCategoryMovies,
   getStreamingMovies,
 } from '../../lib/actions';
 import { handleLike } from '../../screens/favorite/FavoriteScreen'
+
+const initialValue = {
+  name: '',
+  slug: '',
+  original_name: '',
+  thumb_url: '',
+  poster_url: '',
+  created: '',
+  modified: '',
+  description: '',
+  total_episodes: 0,
+  current_episode: '',
+  time: '',
+  quality: '',
+  language: '',
+  director: '',
+  casts: '',
+};
 
 const HomeScreen = ({ navigation }: any) => {
   const [streamingMovies, setStreamingMovies] = useState<Movie[]>([]);
@@ -32,11 +50,13 @@ const HomeScreen = ({ navigation }: any) => {
   const [tvShows, setTVShows] = useState<Movie[]>([]);
   const [sexMovies, setSexMovies] = useState<Movie[]>([]);
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+  const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
   const userId = auth().currentUser?.uid;
 
   const getMovies = async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
+    setCurrentItem(item[0]);
   };
 
   const getCurrentMoviesHome = async () => {
@@ -172,7 +192,7 @@ const HomeScreen = ({ navigation }: any) => {
     getCurrentSexMovies();
   }, []);
 
-  console.log(favorites)
+  // console.log(favorites)
 
   return (
     <Container style={{ backgroundColor: colors.black }}>
@@ -197,15 +217,19 @@ const HomeScreen = ({ navigation }: any) => {
           </TouchableOpacity>
         </Row>
       </Section>
-      <View>
-        <Swiper showsPagination={false} style={{ height: 380 }}>
+      <View style={{ height: 450 }}>
+        <Swiper
+          onIndexChanged={index => setCurrentItem(streamingMovies[index])}
+          showsPagination={false}
+          autoplay
+          style={{ height: 380 }}>
           {streamingMovies.map((item, index) => (
-            <View key={index} style={{ width: sizes.width }}>
+            <Row key={index} styles={{ width: sizes.width, borderRadius: 10 }}>
               <ImageBackground
                 source={{ uri: item.poster_url }}
                 width={50}
                 height={50}
-                style={{ width: '100%', height: 380 }}>
+                style={{ width: '100%', height: 380, borderRadius: 10 }}>
                 <View
                   style={{
                     position: 'absolute',
@@ -298,11 +322,10 @@ const HomeScreen = ({ navigation }: any) => {
                   </Row>
                 </Row>
               </ImageBackground>
-            </View>
+            </Row>
           ))}
         </Swiper>
       </View>
-      <Space height={12} />
       <Section>
         <CategoryComponent text="Phim đang chiếu" slug="phim-dang-chieu" />
         <Space height={8} />

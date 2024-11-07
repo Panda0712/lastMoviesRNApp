@@ -1,14 +1,15 @@
-import { View, Text, FlatList, Image, TouchableOpacity, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import firestore from '@react-native-firebase/firestore';
+import {Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
-import { colors } from '../../constants/colors';
-import { Row, Space } from '@bsdaoquang/rncomponent';
-import { Container, TextComponent } from '../../components';
+import firestore from '@react-native-firebase/firestore';
+import {useEffect, useState} from 'react';
+import {Alert, FlatList, Image, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fontFamilies } from '../../constants/fontFamilies';
 import { firebase } from '@react-native-firebase/storage';
 import UserScreen from '../user/UserScreen';
+import { Container, TextComponent } from '../../components';
+import { colors } from '../../constants/colors';
+import { sizes } from '../../constants/sizes';
 
 
 interface FavoriteItem {
@@ -36,6 +37,7 @@ export const handleLike = async (movieId: string, userId: string | undefined) =>
   try {
     const movieDoc = await movieRef.get();
 
+
     if (!movieDoc.exists) {
       await movieRef.set({ likes: [] });
     }
@@ -55,11 +57,11 @@ export const handleLike = async (movieId: string, userId: string | undefined) =>
     }
 
   } catch (error) {
-    console.error("Error updating likes: ", error);
+    console.error('Error updating likes: ', error);
   }
 };
 
-const FavoriteScreen = ({ navigation }: any) => {
+const FavoriteScreen = ({navigation}: any) => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const userId = auth().currentUser?.uid;
 
@@ -84,35 +86,48 @@ const FavoriteScreen = ({ navigation }: any) => {
     const userDoc = await userRef.get();
     if (userDoc.exists) {
       const existingFavorites = userDoc.data()?.favorites || [];
-      const updatedFavorites = existingFavorites.filter((item: FavoriteItem) => item.name !== name);
-      await userRef.update({ favorites: updatedFavorites });
+      const updatedFavorites = existingFavorites.filter(
+        (item: FavoriteItem) => item.name !== name,
+      );
+      await userRef.update({favorites: updatedFavorites});
       setFavorites(updatedFavorites);
     }
   };
 
   const handleRemoveFavorite = (name: string) => {
     Alert.alert(
-      "Xóa khỏi yêu thích",
-      "Bạn có chắc chắn muốn xóa phim này khỏi danh sách yêu thích?",
+      'Xóa khỏi yêu thích',
+      'Bạn có chắc chắn muốn xóa phim này khỏi danh sách yêu thích?',
       [
-        { text: "Hủy", style: "cancel" },
-        { text: "Xóa", onPress: () => removeFavorite(name) }
-      ]
+        {text: 'Hủy', style: 'cancel'},
+        {text: 'Xóa', onPress: () => removeFavorite(name)},
+      ],
     );
   };
 
-  const renderItem = ({ item }: { item: FavoriteItem }) => (
-    <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => navigation.navigate('MovieDetails', { movie: item })}>
-      <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+  const renderItem = ({item}: {item: FavoriteItem}) => (
+    <TouchableOpacity
+      style={{marginBottom: 10}}
+      onPress={() => navigation.navigate('MovieDetails', {movie: item})}>
+      <View style={{flexDirection: 'column', alignItems: 'center'}}>
         <Image
-          source={{ uri: item.poster_url }}
-          style={{ width: "100%", height: 250, marginRight: 10 }}
-          resizeMode='cover'
+          source={{uri: item.poster_url}}
+          style={{width: '100%', height: 250, marginRight: 10}}
+          resizeMode="cover"
         />
         <Space height={10} />
 
-        <Row styles={{ justifyContent: 'space-between', width: '100%', paddingHorizontal: 10 }}>
-          <TextComponent text={item.name} color={colors.white} font={fontFamilies.firaMedium} />
+        <Row
+          styles={{
+            justifyContent: 'space-between',
+            width: '100%',
+            paddingHorizontal: 10,
+          }}>
+          <TextComponent
+            text={item.name}
+            color={colors.white}
+            font={fontFamilies.firaMedium}
+          />
           <TouchableOpacity onPress={() => handleRemoveFavorite(item.name)}>
             <Ionicons name="heart" size={24} color="red" />
           </TouchableOpacity>
@@ -123,21 +138,42 @@ const FavoriteScreen = ({ navigation }: any) => {
   );
 
   return (
-    <Container isScroll={false} style={{ backgroundColor: colors.black }}
-      title='Yêu thích'
+    <Container
+      isScroll={false}
+      style={{backgroundColor: colors.black}}
+      title="Yêu thích"
       fixed
       back={
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name='chevron-back' size={24} color={colors.white} />
+          <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
-      }
-    >
-      <FlatList
-        data={favorites}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.slug}
-        showsVerticalScrollIndicator={false}
-      />
+      }>
+      {favorites.length > 0 ? (
+        <FlatList
+          data={favorites}
+          renderItem={renderItem}
+          keyExtractor={item => item.slug}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Section styles={{marginTop: 20}}>
+          <Row styles={{flexDirection: 'column'}}>
+            <Image
+              source={require('../../assets/images/favorite.png')}
+              width={50}
+              height={50}
+              style={{width: 250, height: 200}}
+            />
+            <TextComponent
+              font={fontFamilies.firaMedium}
+              size={sizes.bigTitle}
+              styles={{textAlign: 'center'}}
+              color={colors.white}
+              text="Chưa có phim yêu thích nào! Hãy thêm phim vào nhé!"
+            />
+          </Row>
+        </Section>
+      )}
     </Container>
   );
 };
