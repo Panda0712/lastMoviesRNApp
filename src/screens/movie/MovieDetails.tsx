@@ -20,7 +20,6 @@ import { sizes } from '../../constants/sizes';
 import { getSpecificMovieDetails } from '../../lib/actions';
 import { parseTime } from '../../utils/helpers';
 import { handleLike } from '../../screens/favorite/FavoriteScreen'
-// import { movieLikes } from '../../screens/favorite/FavoriteScreen'
 
 const MovieDetails = ({ navigation, route }: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -68,20 +67,6 @@ const MovieDetails = ({ navigation, route }: any) => {
     setIsPlaying(true);
   };
 
-  // const fetchLikesCount = async () => {
-  //   try {
-  //     const movieRef = firestore().collection('movies').doc(movieSlug);
-  //     const movieDoc = await movieRef.get();
-
-  //     if (movieDoc.exists) {
-  //       setLikesCount(movieDoc.data()?.likesCount || 0);
-  //     }
-  //   } catch (error) {
-  //     console.log('error fetching like: ', error);
-  //   }
-  // };
-
-  // 
   useEffect(() => {
     const fetchLikesCount = async () => {
       try {

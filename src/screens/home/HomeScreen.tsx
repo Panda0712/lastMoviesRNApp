@@ -159,6 +159,9 @@ const HomeScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     fetchFavorites(userId);
+  }, [])
+
+  useEffect(() => {
     getMovies();
     getCurrentMoviesHome();
     getCurrentSeriesMovies();
@@ -168,6 +171,8 @@ const HomeScreen = ({ navigation }: any) => {
     getCurrentTVShows();
     getCurrentSexMovies();
   }, []);
+
+  console.log(favorites)
 
   return (
     <Container style={{ backgroundColor: colors.black }}>
@@ -223,7 +228,6 @@ const HomeScreen = ({ navigation }: any) => {
                     <TouchableOpacity
                       onPress={() => {
                         toggleFavoriteMovie(
-
                           userId,
                           item.name,
                           item.slug,
