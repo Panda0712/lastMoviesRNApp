@@ -1,8 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
-import React from 'react';
-import {Container, TextComponent} from '../../components';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 
@@ -80,16 +79,18 @@ const AboutScreen = ({navigation}: any) => {
         </TouchableOpacity>
       </View>
 
-      <TextComponent
-        text="Chính sách bảo mật"
-        color={colors.white}
-        styles={styless.policyText}
-      />
-      <TextComponent
-        text="Điều khoản dịch vụ"
-        color={colors.white}
-        styles={styless.policyText}
-      />
+      <View>
+        <TextComponent
+          text="Chính sách bảo mật"
+          color={colors.white}
+          styles={styless.policyText}
+        />
+        <TextComponent
+          text="Điều khoản dịch vụ"
+          color={colors.white}
+          styles={styless.policyText}
+        />
+      </View>
     </Container>
   );
 };

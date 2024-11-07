@@ -1,17 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
-import React, {useEffect, useState} from 'react';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useEffect, useState} from 'react';
 import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
+import Toast from 'react-native-toast-message';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Container, TextComponent} from '../../components';
-import {sizes} from '../../constants/sizes';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {validateEmail} from '../../utils/helpers';
-import Toast from 'react-native-toast-message';
-import auth from '@react-native-firebase/auth';
+import {sizes} from '../../constants/sizes';
 import {Auth} from '../../utils/handleAuth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {validateEmail} from '../../utils/helpers';
 
 const Login = ({navigation}: any) => {
   const [email, setEmail] = useState('');

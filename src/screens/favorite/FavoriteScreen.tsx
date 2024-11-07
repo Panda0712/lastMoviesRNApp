@@ -1,4 +1,4 @@
-import {Row, Space} from '@bsdaoquang/rncomponent';
+import {Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
+import {sizes} from '../../constants/sizes';
 
 interface FavoriteItem {
   name: string;
@@ -101,7 +102,7 @@ const FavoriteScreen = ({navigation}: any) => {
   const renderItem = ({item}: {item: FavoriteItem}) => (
     <TouchableOpacity
       style={{marginBottom: 10}}
-      onPress={() => navigation.navigate('MovieDetails')}>
+      onPress={() => navigation.navigate('MovieDetails', {movie: item})}>
       <View style={{flexDirection: 'column', alignItems: 'center'}}>
         <Image
           source={{uri: item.poster_url}}
@@ -141,12 +142,32 @@ const FavoriteScreen = ({navigation}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       }>
-      <FlatList
-        data={favorites}
-        renderItem={renderItem}
-        keyExtractor={item => item.slug}
-        showsVerticalScrollIndicator={false}
-      />
+      {favorites.length > 0 ? (
+        <FlatList
+          data={favorites}
+          renderItem={renderItem}
+          keyExtractor={item => item.slug}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Section styles={{marginTop: 20}}>
+          <Row styles={{flexDirection: 'column'}}>
+            <Image
+              source={require('../../assets/images/favorite.png')}
+              width={50}
+              height={50}
+              style={{width: 250, height: 200}}
+            />
+            <TextComponent
+              font={fontFamilies.firaMedium}
+              size={sizes.bigTitle}
+              styles={{textAlign: 'center'}}
+              color={colors.white}
+              text="Chưa có phim yêu thích nào! Hãy thêm phim vào nhé!"
+            />
+          </Row>
+        </Section>
+      )}
     </Container>
   );
 };
