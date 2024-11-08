@@ -21,6 +21,7 @@ import {
   getStreamingMovies,
 } from '../../lib/actions';
 import Toast from 'react-native-toast-message';
+import Carousel from 'react-native-snap-carousel';
 
 const initialValue = {
   name: '',
@@ -178,11 +179,8 @@ const HomeScreen = ({navigation}: any) => {
     <Container style={{backgroundColor: colors.black}}>
       <Section
         styles={{
-          position: 'absolute',
-          top: 20,
+          marginTop: 25,
           paddingHorizontal: 8,
-          left: 0,
-          right: 0,
           zIndex: 100,
         }}>
         <Row justifyContent="space-between" alignItems="center">
@@ -199,21 +197,21 @@ const HomeScreen = ({navigation}: any) => {
           </TouchableOpacity>
         </Row>
       </Section>
-      <View style={{height: 450}}>
+      <View>
         {streamingMovies.length > 0 && (
-          <Swiper
-            onIndexChanged={index => {
-              setCurrentItem(streamingMovies[index]);
-            }}
-            showsPagination={false}
+          <Carousel
+            containerCustomStyle={{position: 'relative'}}
+            layout={'default'}
+            layoutCardOffset={18}
+            loop
             autoplay
-            style={{height: 380}}>
-            {streamingMovies.map((item, index) => (
+            data={streamingMovies}
+            renderItem={({item, index}) => (
               <Row
                 key={index}
                 styles={{
-                  width: sizes.width,
-                  borderRadius: 20,
+                  width: sizes.width * 0.7,
+                  borderRadius: 6,
                   overflow: 'hidden',
                 }}>
                 <ImageBackground
@@ -221,29 +219,21 @@ const HomeScreen = ({navigation}: any) => {
                   width={50}
                   height={50}
                   style={{
-                    width: '100%',
+                    width: sizes.width * 0.7,
                     height: 380,
-                    borderRadius: 20,
+                    borderRadius: 6,
                     overflow: 'hidden',
                     shadowColor: colors.black,
                     shadowOpacity: 0.3,
                     shadowRadius: 10,
                     elevation: 5,
-                  }}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(0,0,0,0.4)',
-                    }}
-                  />
-                </ImageBackground>
+                  }}></ImageBackground>
               </Row>
-            ))}
-          </Swiper>
+            )}
+            sliderWidth={sizes.width}
+            itemWidth={sizes.width * 0.7}
+            onSnapToItem={index => setCurrentItem(streamingMovies[index])}
+          />
         )}
 
         <Space height={20} />
@@ -302,6 +292,8 @@ const HomeScreen = ({navigation}: any) => {
           </Row>
         </Row>
       </View>
+
+      <Space height={8} />
 
       <Section>
         <CategoryComponent text="Phim đang chiếu" slug="phim-dang-chieu" />

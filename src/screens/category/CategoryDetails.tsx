@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Swiper from 'react-native-swiper';
+import Carousel from 'react-native-snap-carousel';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -59,6 +59,7 @@ const CategoryDetails = ({navigation, route}: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const {category, slug, text} = route.params;
   const userId = auth().currentUser?.uid;
@@ -109,6 +110,7 @@ const CategoryDetails = ({navigation, route}: any) => {
     const items = await getCategoryFilmMovies(category, slug, 1);
     setMovies(items);
     setCurrentItem(items[0]);
+    setCurrentIndex(0);
   };
 
   const fetchMovies = async (page: number, shouldAppend: boolean = true) => {
@@ -144,7 +146,10 @@ const CategoryDetails = ({navigation, route}: any) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     setCurrentPage(1);
-    await fetchMovies(1, false);
+    const success = await fetchMovies(1, false);
+    if (success) {
+      setCurrentIndex(0);
+    }
   };
 
   const renderMovie = ({item}: {item: Movie}) => (
@@ -175,26 +180,26 @@ const CategoryDetails = ({navigation, route}: any) => {
             <Ionicons name="chevron-back" size={24} color={colors.white} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
-            <Ionicons name="search" size={36} color={colors.white} />
+            <Ionicons name="search-outline" size={30} color={colors.white} />
           </TouchableOpacity>
         </Row>
       </Section>
 
-      <View style={{height: 450}}>
+      <View style={{marginTop: 100}}>
         {movies.length > 0 && (
-          <Swiper
-            onIndexChanged={index => {
-              setCurrentItem(movies[index]);
-            }}
-            showsPagination={false}
+          <Carousel
+            containerCustomStyle={{position: 'relative'}}
+            layout={'default'}
+            layoutCardOffset={18}
+            loop
             autoplay
-            style={{height: 380}}>
-            {movies.map((item, index) => (
+            data={movies}
+            renderItem={({item, index}) => (
               <Row
                 key={index}
                 styles={{
-                  width: sizes.width,
-                  borderRadius: 20,
+                  width: sizes.width * 0.7,
+                  borderRadius: 6,
                   overflow: 'hidden',
                 }}>
                 <ImageBackground
@@ -202,29 +207,25 @@ const CategoryDetails = ({navigation, route}: any) => {
                   width={50}
                   height={50}
                   style={{
-                    width: '100%',
+                    width: sizes.width * 0.7,
                     height: 380,
-                    borderRadius: 20,
+                    borderRadius: 6,
                     overflow: 'hidden',
                     shadowColor: colors.black,
                     shadowOpacity: 0.3,
                     shadowRadius: 10,
                     elevation: 5,
-                  }}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(0,0,0,0.4)',
-                    }}
-                  />
-                </ImageBackground>
+                  }}></ImageBackground>
               </Row>
-            ))}
-          </Swiper>
+            )}
+            sliderWidth={sizes.width}
+            itemWidth={sizes.width * 0.7}
+            onSnapToItem={index => {
+              setCurrentItem(movies[index]);
+              setCurrentIndex(index);
+            }}
+            firstItem={currentIndex}
+          />
         )}
 
         <Space height={20} />

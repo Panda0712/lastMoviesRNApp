@@ -83,6 +83,7 @@ const SearchScreen = ({navigation}: any) => {
             />
             <Space height={20} />
             <FlatList
+              style={{marginHorizontal: 'auto'}}
               key={searchMovies.length > 0 ? 'search' : 'guess'}
               data={searchMovies}
               numColumns={2}
@@ -100,7 +101,7 @@ const SearchScreen = ({navigation}: any) => {
                     source={{uri: item.poster_url}}
                     width={50}
                     height={50}
-                    style={{width: sizes.width * 0.43, height: 100}}
+                    style={{width: sizes.width * 0.42, height: 100}}
                   />
                 </Row>
               )}
