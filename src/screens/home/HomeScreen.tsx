@@ -217,47 +217,51 @@ const HomeScreen = ({navigation}: any) => {
         </Row>
       </Section>
       <View style={{height: 450}}>
-        <Swiper
-          onIndexChanged={index => setCurrentItem(streamingMovies[index])}
-          showsPagination={false}
-          autoplay
-          style={{height: 380}}>
-          {streamingMovies.map((item, index) => (
-            <Row
-              key={index}
-              styles={{
-                width: sizes.width,
-                borderRadius: 20,
-                overflow: 'hidden',
-              }}>
-              <ImageBackground
-                source={{uri: item.poster_url}}
-                width={50}
-                height={50}
-                style={{
-                  width: '100%',
-                  height: 380,
+        {streamingMovies.length > 0 && (
+          <Swiper
+            onIndexChanged={index => {
+              setCurrentItem(streamingMovies[index]);
+            }}
+            showsPagination={false}
+            autoplay
+            style={{height: 380}}>
+            {streamingMovies.map((item, index) => (
+              <Row
+                key={index}
+                styles={{
+                  width: sizes.width,
                   borderRadius: 20,
                   overflow: 'hidden',
-                  shadowColor: colors.black,
-                  shadowOpacity: 0.3,
-                  shadowRadius: 10,
-                  elevation: 5,
                 }}>
-                <View
+                <ImageBackground
+                  source={{uri: item.poster_url}}
+                  width={50}
+                  height={50}
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                  }}
-                />
-              </ImageBackground>
-            </Row>
-          ))}
-        </Swiper>
+                    width: '100%',
+                    height: 380,
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    shadowColor: colors.black,
+                    shadowOpacity: 0.3,
+                    shadowRadius: 10,
+                    elevation: 5,
+                  }}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(0,0,0,0.4)',
+                    }}
+                  />
+                </ImageBackground>
+              </Row>
+            ))}
+          </Swiper>
+        )}
 
         <Space height={20} />
 
