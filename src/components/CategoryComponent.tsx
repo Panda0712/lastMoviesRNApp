@@ -7,6 +7,7 @@ import {colors} from '../constants/colors';
 import {fontFamilies} from '../constants/fontFamilies';
 import {sizes} from '../constants/sizes';
 import TextComponent from './TextComponent';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export type RootStackParamList = {
   CategoryScreen: {
@@ -36,12 +37,7 @@ const CategoryComponent = ({text, slug, showArrow}: any) => {
           })
         }>
         {!showArrow && (
-          <TextComponent
-            size={30}
-            styles={{textTransform: 'uppercase'}}
-            color={colors.white}
-            text=">"
-          />
+          <Entypo name="chevron-small-right" size={30} color={colors.white} />
         )}
       </TouchableOpacity>
     </Row>

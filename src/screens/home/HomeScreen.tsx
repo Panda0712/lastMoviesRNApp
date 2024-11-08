@@ -48,7 +48,10 @@ const HomeScreen = ({navigation}: any) => {
   const [actionMovies, setActionMovies] = useState<Movie[]>([]);
   const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
   const [tvShows, setTVShows] = useState<Movie[]>([]);
-  const [sexMovies, setSexMovies] = useState<Movie[]>([]);
+  const [mentalMovies, setMentalMovies] = useState<Movie[]>([]);
+  const [funnyMovies, setFunnyMovies] = useState<Movie[]>([]);
+  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
+  const [magicMovies, setMagicMovies] = useState<Movie[]>([]);
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
 
@@ -136,9 +139,24 @@ const HomeScreen = ({navigation}: any) => {
     setTVShows(item);
   };
 
-  const getCurrentSexMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('phim-18');
-    setSexMovies(item);
+  const getCurrentMentalMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('tam-ly');
+    setMentalMovies(item);
+  };
+
+  const getCurrentFunnyMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('phim-hai');
+    setFunnyMovies(item);
+  };
+
+  const getCurrentAnimeMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('hoat-hinh');
+    setAnimeMovies(item);
+  };
+
+  const getCurrentMagicMovies = async () => {
+    const item: any = await getSpecificCategoryMovies('gia-tuong');
+    setMagicMovies(item);
   };
 
   useEffect(() => {
@@ -149,8 +167,11 @@ const HomeScreen = ({navigation}: any) => {
     getCurrentActionMovies();
     getCurrentLoveMovies();
     getCurrentTVShows();
-    getCurrentSexMovies();
+    getCurrentMentalMovies();
     getFavoritesMovies();
+    getCurrentFunnyMovies();
+    getCurrentAnimeMovies();
+    getCurrentMagicMovies();
   }, []);
 
   return (
@@ -166,13 +187,15 @@ const HomeScreen = ({navigation}: any) => {
         }}>
         <Row justifyContent="space-between" alignItems="center">
           <Image
-            style={{width: 110, height: 110}}
+            style={{width: 85, height: 100}}
             source={require('../../assets/images/logo.png')}
             width={100}
             height={100}
           />
-          <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
-            <Ionicons name="search" size={36} color={colors.white} />
+          <TouchableOpacity
+            style={{marginBottom: 20}}
+            onPress={() => navigation.navigate('SearchScreen')}>
+            <Ionicons name="search-outline" size={30} color={colors.white} />
           </TouchableOpacity>
         </Row>
       </Section>
@@ -317,9 +340,27 @@ const HomeScreen = ({navigation}: any) => {
       </Section>
 
       <Section>
-        <CategoryComponent text="Phim 18+" slug="phim-18" />
+        <CategoryComponent text="Tâm lý" slug="tam-ly" />
         <Space height={8} />
-        <FlatListComponent data={sexMovies} />
+        <FlatListComponent data={mentalMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Phim hài" slug="phim-hai" />
+        <Space height={8} />
+        <FlatListComponent data={funnyMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Hoạt hình" slug="hoat-hinh" />
+        <Space height={8} />
+        <FlatListComponent data={animeMovies} />
+      </Section>
+
+      <Section>
+        <CategoryComponent text="Giả tưởng" slug="gia-tuong" />
+        <Space height={8} />
+        <FlatListComponent data={magicMovies} />
       </Section>
     </Container>
   );

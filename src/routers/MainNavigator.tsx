@@ -1,6 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import TabNavigator from './TabNavigator';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   AboutScreen,
   CategoryDetails,
@@ -11,12 +9,13 @@ import {
   UserScreen,
 } from '../screens';
 import PasswordReset from '../screens/password/PasswordReset';
+import TabNavigator from './TabNavigator';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Main" component={TabNavigator} />
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="MovieDetails" component={MovieDetails} />

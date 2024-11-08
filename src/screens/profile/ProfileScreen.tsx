@@ -9,6 +9,7 @@ import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const ProfileScreen = ({navigation}: any) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -95,7 +96,11 @@ const ProfileScreen = ({navigation}: any) => {
                 font={fontFamilies.firaMedium}
               />
             </Row>
-            <TextComponent size={sizes.icon} color={colors.grey} text=">" />
+            <Entypo
+              name="chevron-small-right"
+              size={sizes.icon}
+              color={colors.grey}
+            />
           </Row>
           <Space height={12} />
           {isExpanded && (
@@ -174,7 +179,11 @@ const ProfileScreen = ({navigation}: any) => {
                 size={sizes.title}
               />
             </Row>
-            <TextComponent size={sizes.icon} color={colors.grey} text=">" />
+            <Entypo
+              name="chevron-small-right"
+              size={sizes.icon}
+              color={colors.grey}
+            />
           </Row>
 
           <Space height={20} />
@@ -205,7 +214,11 @@ const ProfileScreen = ({navigation}: any) => {
                 size={sizes.title}
               />
             </Row>
-            <TextComponent size={sizes.icon} color={colors.grey} text=">" />
+            <Entypo
+              name="chevron-small-right"
+              size={sizes.icon}
+              color={colors.grey}
+            />
           </Row>
 
           <Space height={20} />
@@ -230,7 +243,11 @@ const ProfileScreen = ({navigation}: any) => {
                 size={sizes.title}
               />
             </Row>
-            <TextComponent size={sizes.icon} color={colors.grey} text=">" />
+            <Entypo
+              name="chevron-small-right"
+              size={sizes.icon}
+              color={colors.grey}
+            />
           </Row>
         </Row>
       </Section>

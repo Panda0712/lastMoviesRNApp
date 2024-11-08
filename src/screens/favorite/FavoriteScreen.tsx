@@ -49,12 +49,12 @@ const FavoriteScreen = ({navigation}: any) => {
             <Row
               onPress={() => navigation.navigate('MovieDetails', {movie: item})}
               key={index}
-              styles={{marginHorizontal: 6, marginVertical: 6}}>
+              styles={{marginHorizontal: 5, marginVertical: 5}}>
               <Image
                 source={{uri: item.thumb_url}}
                 width={50}
                 height={50}
-                style={{width: 120, height: 180}}
+                style={{width: sizes.width * 0.28, height: 170}}
               />
             </Row>
           )}
