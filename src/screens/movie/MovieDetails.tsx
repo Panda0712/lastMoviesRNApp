@@ -15,10 +15,9 @@ import WebView from 'react-native-webview';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import {Movie, MoviesInfo, Reviews} from '../../constants/models';
+import {Movie, MovieLikes, MoviesInfo, Reviews} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
-import {handleLike} from '../../screens/favorite/FavoriteScreen';
 import {parseTime} from '../../utils/helpers';
 
 const MovieDetails = ({navigation, route}: any) => {
@@ -29,15 +28,88 @@ const MovieDetails = ({navigation, route}: any) => {
   const [commentValue, setCommentValue] = useState('');
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [activeEpisode, setActiveEpisode] = useState('');
-  const [favorites, setFavorites] = useState<{[key: string]: boolean}>({});
-  const [likesCount, setLikesCount] = useState(0);
-  const [isInList, setIsInList] = useState(false);
-  const userId = auth().currentUser?.uid;
+  const [favorites, setFavorites] = useState<Movie[]>([]);
+  const [movieLikes, setMovieLikes] = useState<MovieLikes>();
 
+  const userId = auth().currentUser?.uid;
   const {movie}: any = route.params;
   const user = auth().currentUser;
   const movieSlug = movie.slug;
   const listEpisodes = moviesInfo[0]?.items;
+
+  const getFavoritesMovies = () => {
+    firestore()
+      .collection('favorites')
+      .doc(userId)
+      .onSnapshot(item => {
+        const existingFavorites = item.data()?.favorites || [];
+        setFavorites(existingFavorites);
+      });
+  };
+
+  const getMovieLikes = () => {
+    firestore()
+      .collection('movies')
+      .doc(movie.slug)
+      .onSnapshot((item: any) => {
+        setMovieLikes(item.data() || []);
+      });
+  };
+
+  const addLikeMovie = async (name: string, userIdProp: string | undefined) => {
+    if (!userId) return;
+
+    const userRef = firestore().collection('movies').doc(movie.slug);
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      const existingLikes = userDoc.data()?.likes || [];
+      const specificUser = existingLikes.filter(
+        (item: string) => item === userId,
+      );
+      const updatedLikes =
+        specificUser.length > 0
+          ? existingLikes.filter((item: string) => item !== userIdProp)
+          : [...existingLikes, userIdProp];
+      await userRef.update({likes: updatedLikes});
+    } else {
+      await userRef.set({
+        name,
+        likes: [userIdProp],
+      });
+    }
+  };
+
+  const addFavoriteMovie = async (movieItem: Movie) => {
+    if (!userId) return;
+    const userRef = firestore().collection('favorites').doc(userId);
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      const existingFavorites = userDoc.data()?.favorites || [];
+      const specificItem = existingFavorites.filter(
+        (item: Movie) => item.name === movieItem.name,
+      );
+      const updatedFavorites =
+        specificItem.length > 0
+          ? existingFavorites.filter(
+              (item: Movie) => item.name !== movieItem.name,
+            )
+          : [...existingFavorites, movieItem];
+      await userRef.update({favorites: updatedFavorites});
+      Toast.show({
+        type: 'success',
+        text1: 'Thông báo',
+        text2:
+          specificItem.length > 0
+            ? 'Xóa khỏi danh sách thành công'
+            : 'Thêm vào danh sách yêu thích thành công',
+      });
+    } else {
+      await userRef.set({
+        id: userId,
+        favorites: [movieItem],
+      });
+    }
+  };
 
   const handleShare = async () => {
     let options;
@@ -124,113 +196,10 @@ const MovieDetails = ({navigation, route}: any) => {
     setCommentValue('');
   };
 
-  const fetchFavorites = (userId: string | undefined) => {
-    if (!userId) return;
-
-    firestore()
-      .collection('favorites')
-      .doc(userId)
-      .onSnapshot(item => {
-        if (item.exists) {
-          const existingFavorites = item.data()?.favorites || [];
-          const favoriteMap: {[key: string]: boolean} = {};
-          existingFavorites.forEach((movie: any) => {
-            favoriteMap[movie.name] = true;
-            setIsInList(prev => !prev);
-          });
-          setFavorites(favoriteMap);
-        } else {
-          setFavorites({});
-        }
-      });
-  };
-
-  const toggleFavoriteMovie = async () => {
-    if (!userId) return;
-
-    try {
-      const userRef = firestore().collection('favorites').doc(userId);
-      const userDoc = await userRef.get();
-
-      if (!userDoc.exists) {
-        await userRef.set({favorites: []});
-      }
-
-      const existingFavorites = userDoc.data()?.favorites || [];
-      const isMovieExists = existingFavorites.some(
-        (m: any) => m.name === movie.name,
-      );
-
-      const newFavorite = {
-        name: movie.name,
-        slug: movie.slug,
-        original_name: movie.original_name,
-        thumb_url: movie.thumb_url,
-        poster_url: movie.poster_url,
-        created: movie.created,
-        modified: movie.modified,
-        description: movie.description,
-        total_episodes: movie.total_episodes,
-        current_episode: movie.current_episode,
-        time: movie.time,
-        quality: movie.quality,
-        language: movie.language,
-        director: movie.director,
-        casts: movie.casts,
-      };
-
-      if (isMovieExists) {
-        await userRef.update({
-          favorites: firestore.FieldValue.arrayRemove(newFavorite),
-        });
-        setFavorites(prev => ({...prev, [movie.name]: false}));
-      } else {
-        await userRef.update({
-          favorites: firestore.FieldValue.arrayUnion({...newFavorite}),
-        });
-        setFavorites(prev => ({...prev, [movie.name]: true}));
-      }
-
-      setIsInList(prev => !prev);
-
-      Toast.show({
-        type: 'success',
-        text1: 'Thông báo',
-        text2: isMovieExists
-          ? 'Xóa khỏi danh sách thành công'
-          : 'Thêm vào danh sách yêu thích thành công',
-      });
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: 'error',
-        text1: 'Lỗi',
-        text2: 'Không thể cập nhật danh sách yêu thích. Vui lòng thử lại sau.',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const getLikesCount = () => {
-      try {
-        firestore()
-          .collection('movies')
-          .doc(movie.name)
-          .onSnapshot(item => {
-            if (item.exists) {
-              const likes = item.data()?.likes || [];
-              setLikesCount(likes.length);
-            }
-          });
-      } catch (error) {
-        console.log('Lỗi tải tổng lượt yêu thích: ', error);
-      }
-    };
-    getLikesCount();
-  }, []);
-
   useEffect(() => {
     handleGetComments();
+    getFavoritesMovies();
+    getMovieLikes();
   }, []);
 
   useEffect(() => {
@@ -238,10 +207,6 @@ const MovieDetails = ({navigation, route}: any) => {
       handleGetMoviesInfo(movieSlug.toString());
     }
   }, [movieSlug]);
-
-  useEffect(() => {
-    fetchFavorites(userId);
-  }, []);
 
   return (
     <Container style={{backgroundColor: colors.black}}>
@@ -408,21 +373,27 @@ const MovieDetails = ({navigation, route}: any) => {
               borderWidth: 2,
             }}>
             <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
-              <AntDesign
-                name="heart"
-                size={30}
-                color={favorites[movie.name] ? colors.red : colors.white}
-              />
+              <TouchableOpacity
+                onPress={() => addLikeMovie(movie.name, userId)}>
+                {movieLikes &&
+                movieLikes?.likes?.filter((item: string) => item === userId)
+                  .length > 0 ? (
+                  <AntDesign name="heart" size={30} color={colors.red} />
+                ) : (
+                  <AntDesign name="heart" size={30} color={colors.white} />
+                )}
+              </TouchableOpacity>
               <TextComponent
                 size={sizes.text}
                 color={colors.white}
-                text={`${likesCount}`}
+                text={`${movieLikes?.likes?.length ?? 0}`}
               />
             </Row>
 
             <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
-              <TouchableOpacity onPress={toggleFavoriteMovie}>
-                {isInList ? (
+              <TouchableOpacity onPress={() => addFavoriteMovie(movie)}>
+                {favorites.filter((item: Movie) => item.name === movie.name)
+                  .length > 0 ? (
                   <Entypo name="check" size={30} color={colors.white} />
                 ) : (
                   <Entypo name="plus" size={30} color={colors.white} />

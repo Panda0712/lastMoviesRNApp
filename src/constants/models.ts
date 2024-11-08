@@ -40,3 +40,8 @@ export interface Reviews {
   name: string;
   comments: Comments[];
 }
+
+export interface MovieLikes {
+  name: string;
+  likes: string[];
+}
