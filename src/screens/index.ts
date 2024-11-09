@@ -11,6 +11,7 @@ import FavoriteScreen from './favorite/FavoriteScreen';
 import HomeScreen from './home/HomeScreen';
 import MovieDetails from './movie/MovieDetails';
 import PasswordReset from './password/PasswordReset';
+import PosterScreen from './poster/PosterScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import SearchScreen from './search/SearchScreen';
 import UserScreen from './user/UserScreen';
@@ -32,4 +33,5 @@ export {
   CategoryDetails,
   PasswordReset,
   ForgotPassword,
+  PosterScreen,
 };

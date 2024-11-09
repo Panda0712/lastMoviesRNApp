@@ -5,6 +5,7 @@ import {
   CategoryScreen,
   ContactScreen,
   MovieDetails,
+  PosterScreen,
   SearchScreen,
   UserScreen,
 } from '../screens';
@@ -16,6 +17,7 @@ const MainNavigator = () => {
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="PosterScreen" component={PosterScreen} />
       <Stack.Screen name="Main" component={TabNavigator} />
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="MovieDetails" component={MovieDetails} />
