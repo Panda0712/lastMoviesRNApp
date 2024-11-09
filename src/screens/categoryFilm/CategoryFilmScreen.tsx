@@ -121,7 +121,7 @@ const CategoryFilmScreen = ({navigation}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       }
-      style={{backgroundColor: colors.black}}>
+      style={{backgroundColor: colors.black5}}>
       <Section styles={{marginTop: 10}}>
         <FlatList
           data={years}

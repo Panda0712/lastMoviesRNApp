@@ -64,7 +64,7 @@ const ContactScreen = ({navigation}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       }
-      style={{backgroundColor: colors.black, padding: 16, flex: 1}}>
+      style={{backgroundColor: colors.black5, padding: 16, flex: 1}}>
       <TextComponent
         size={sizes.title}
         font={fontFamilies.firaMedium}

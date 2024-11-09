@@ -72,7 +72,7 @@ const PasswordReset = ({navigation}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       }
-      style={{backgroundColor: colors.black}}>
+      style={{backgroundColor: colors.black5}}>
       <Space height={40} />
       <Section>
         <View>

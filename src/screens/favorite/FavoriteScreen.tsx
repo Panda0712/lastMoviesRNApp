@@ -31,7 +31,7 @@ const FavoriteScreen = ({navigation}: any) => {
   return (
     <Container
       isScroll={false}
-      style={{backgroundColor: colors.black}}
+      style={{backgroundColor: colors.black5}}
       title="Danh sách yêu thích"
       fixed
       back={

@@ -24,7 +24,7 @@ const TabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: colors.black,
+          backgroundColor: colors.black5,
           height: 70,
           justifyContent: 'center',
           borderColor: colors.black,

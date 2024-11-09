@@ -41,7 +41,7 @@ const SearchScreen = ({navigation}: any) => {
   }, [searchQuery]);
 
   return (
-    <Container isScroll={false} style={{backgroundColor: colors.black}}>
+    <Container isScroll={false} style={{backgroundColor: colors.black5}}>
       <Section styles={{marginTop: 45}}>
         <Row alignItems="center" justifyContent="space-between">
           <TouchableOpacity onPress={() => navigation.goBack()}>

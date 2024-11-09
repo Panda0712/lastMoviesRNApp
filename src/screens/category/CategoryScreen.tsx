@@ -146,7 +146,7 @@ const MovieListScreen: React.FC<MovieListProps> = ({route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.black5,
   },
   listContent: {
     paddingHorizontal: SPACING / 2,

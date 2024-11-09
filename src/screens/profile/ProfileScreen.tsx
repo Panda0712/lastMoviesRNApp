@@ -30,7 +30,7 @@ const ProfileScreen = ({navigation}: any) => {
           <Ionicons name="chevron-back" size={24} color={colors.white} />
         </TouchableOpacity>
       }
-      style={{backgroundColor: colors.black}}>
+      style={{backgroundColor: colors.black5}}>
       <Row styles={{flexDirection: 'column'}}>
         <Image
           source={require('../../assets/images/logo.png')}

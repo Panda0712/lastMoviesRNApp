@@ -209,7 +209,7 @@ const MovieDetails = ({navigation, route}: any) => {
   }, [movieSlug]);
 
   return (
-    <Container style={{backgroundColor: colors.black}}>
+    <Container style={{backgroundColor: colors.black5}}>
       <Section
         styles={{
           position: 'absolute',
@@ -370,7 +370,7 @@ const MovieDetails = ({navigation, route}: any) => {
               gap: 36,
               paddingBottom: 16,
               borderBottomColor: colors.black2,
-              borderWidth: 2,
+              borderBottomWidth: 2,
             }}>
             <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
               <TouchableOpacity

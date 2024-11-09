@@ -47,7 +47,7 @@ const Container = (props: Props) => {
         <Row
           styles={{
             paddingHorizontal: 16,
-            backgroundColor: fixed ? colors.black : colors.red,
+            backgroundColor: fixed ? colors.black5 : colors.red,
             paddingVertical: 16,
             paddingTop: 44,
           }}>
