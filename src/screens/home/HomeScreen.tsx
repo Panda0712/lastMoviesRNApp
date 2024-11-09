@@ -3,7 +3,13 @@ import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
-import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  ImageBackground,
+  ImageBackgroundBase,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';

@@ -3,7 +3,7 @@
 import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -64,7 +64,7 @@ const CategoryDetails = ({navigation, route}: any) => {
   const {category, slug, text} = route.params;
   const userId = auth().currentUser?.uid;
 
-  const getFavoritesMovies = () => {
+  const getFavoritesMovies = useCallback(() => {
     firestore()
       .collection('favorites')
       .doc(userId)
@@ -72,7 +72,7 @@ const CategoryDetails = ({navigation, route}: any) => {
         const existingFavorites = item.data()?.favorites || [];
         setFavorites(existingFavorites);
       });
-  };
+  }, [userId]);
 
   const addFavoriteMovie = async (movieItem: Movie) => {
     if (!userId) return;
@@ -106,12 +106,12 @@ const CategoryDetails = ({navigation, route}: any) => {
     }
   };
 
-  const handleGetMovies = async () => {
+  const handleGetMovies = useCallback(async () => {
     const items = await getCategoryFilmMovies(category, slug, 1);
     setMovies(items);
     setCurrentItem(items[0]);
     setCurrentIndex(0);
-  };
+  }, [category, slug]);
 
   const fetchMovies = async (page: number, shouldAppend: boolean = true) => {
     try {
@@ -152,178 +152,185 @@ const CategoryDetails = ({navigation, route}: any) => {
     }
   };
 
-  const renderMovie = ({item}: {item: Movie}) => (
-    <TouchableOpacity
-      style={styles.movieItem}
-      onPress={() => navigation.navigate('MovieDetails', {movie: item})}>
-      <Image
-        source={{uri: item.thumb_url}}
-        style={styles.movieImage}
-        resizeMode="cover"
-      />
-    </TouchableOpacity>
+  const renderMovie = useCallback(
+    ({item}: {item: Movie}) => (
+      <TouchableOpacity
+        style={styles.movieItem}
+        onPress={() => navigation.navigate('MovieDetails', {movie: item})}>
+        <Image
+          source={{uri: item.thumb_url}}
+          style={styles.movieImage}
+          resizeMode="cover"
+        />
+      </TouchableOpacity>
+    ),
+    [navigation],
   );
 
-  const renderListHeader = () => (
-    <>
-      <View
-        style={{
-          marginTop: 25,
-          zIndex: 100,
-        }}>
-        {currentItem && (
-          <ImageBackground
-            source={{uri: currentItem?.poster_url}}
-            style={{
-              position: 'absolute',
-              top: 0,
-              width: '100%',
-              height: '100%',
-            }}
-            blurRadius={4}>
-            <View
+  const renderListHeader = useMemo(
+    () => (
+      <>
+        <View
+          style={{
+            marginTop: 25,
+            zIndex: 100,
+          }}>
+          {currentItem && (
+            <ImageBackground
+              source={{uri: currentItem?.poster_url}}
               style={{
                 position: 'absolute',
                 top: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: 'rgba(0,0,0,0.5)',
               }}
-            />
-          </ImageBackground>
-        )}
-        <Row
-          styles={{paddingHorizontal: 8}}
-          justifyContent="space-between"
-          alignItems="center">
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="chevron-back" size={24} color={colors.white} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
-            <Ionicons name="search-outline" size={30} color={colors.white} />
-          </TouchableOpacity>
-        </Row>
+              blurRadius={4}>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }}
+              />
+            </ImageBackground>
+          )}
+          <Row
+            styles={{paddingHorizontal: 8}}
+            justifyContent="space-between"
+            alignItems="center">
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color={colors.white} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SearchScreen')}>
+              <Ionicons name="search-outline" size={30} color={colors.white} />
+            </TouchableOpacity>
+          </Row>
 
-        <View style={{marginTop: 40}}>
-          {movies.length > 0 && (
-            <Carousel
-              containerCustomStyle={{position: 'relative'}}
-              layout={'default'}
-              layoutCardOffset={18}
-              loop
-              autoplay
-              data={movies}
-              renderItem={({item, index}) => (
-                <Row
-                  key={index}
-                  styles={{
-                    width: sizes.width * 0.65,
-                    borderRadius: 6,
-                    overflow: 'hidden',
-                  }}>
-                  <ImageBackground
-                    source={{uri: item.thumb_url}}
-                    width={50}
-                    height={50}
-                    resizeMode="cover"
-                    style={{
+          <View style={{marginTop: 40}}>
+            {movies.length > 0 && (
+              <Carousel
+                containerCustomStyle={{position: 'relative'}}
+                layout={'default'}
+                layoutCardOffset={18}
+                loop
+                autoplay
+                data={movies}
+                renderItem={({item, index}) => (
+                  <Row
+                    key={index}
+                    styles={{
                       width: sizes.width * 0.65,
-                      height: 380,
                       borderRadius: 6,
                       overflow: 'hidden',
-                      shadowColor: colors.black,
-                      shadowOpacity: 0.3,
-                      shadowRadius: 10,
-                      elevation: 5,
-                    }}></ImageBackground>
-                </Row>
-              )}
-              sliderWidth={sizes.width}
-              itemWidth={sizes.width * 0.65}
-              onSnapToItem={index => {
-                setCurrentItem(movies[index]);
-                setCurrentIndex(index);
-              }}
-              firstItem={currentIndex}
-            />
-          )}
-
-          <Space height={20} />
-
-          <Row alignItems="flex-end">
-            <Row
-              styles={{
-                height: 80,
-                marginBottom: 4,
-              }}
-              alignItems="center">
-              <TouchableOpacity onPress={() => addFavoriteMovie(currentItem)}>
-                <Row styles={{flexDirection: 'column', marginBottom: 12}}>
-                  {favorites.filter(
-                    (item: Movie) => item.name === currentItem.name,
-                  ).length > 0 ? (
-                    <Entypo
-                      name="check"
-                      size={sizes.icon}
-                      color={colors.white}
-                    />
-                  ) : (
-                    <Entypo
-                      name="plus"
-                      size={sizes.icon}
-                      color={colors.white}
-                    />
-                  )}
-                  <TextComponent color={colors.white} text="Danh sách" />
-                </Row>
-              </TouchableOpacity>
-              <Space width={28} />
-              <Button
-                icon={
-                  <Entypo
-                    color={colors.black}
-                    name="controller-play"
-                    size={20}
-                  />
-                }
-                radius={6}
-                styles={{paddingVertical: 2, paddingHorizontal: 16}}
-                textStyleProps={{
-                  fontFamily: fontFamilies.firaSemiBold,
-                  fontSize: sizes.text,
-                  marginBottom: 3,
+                    }}>
+                    <ImageBackground
+                      source={{uri: item.thumb_url}}
+                      width={50}
+                      height={50}
+                      resizeMode="cover"
+                      style={{
+                        width: sizes.width * 0.65,
+                        height: 380,
+                        borderRadius: 6,
+                        overflow: 'hidden',
+                        shadowColor: colors.black,
+                        shadowOpacity: 0.3,
+                        shadowRadius: 10,
+                        elevation: 5,
+                      }}></ImageBackground>
+                  </Row>
+                )}
+                sliderWidth={sizes.width}
+                itemWidth={sizes.width * 0.65}
+                onSnapToItem={index => {
+                  setCurrentItem(movies[index]);
+                  setCurrentIndex(index);
                 }}
-                color={colors.white}
-                title="Xem ngay"
-                onPress={() =>
-                  navigation.navigate('MovieDetails', {movie: currentItem})
-                }
+                firstItem={currentIndex}
               />
-              <Space width={28} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('MovieDetails', {movie: currentItem})
-                }>
-                <Row styles={{flexDirection: 'column', marginBottom: 12}}>
-                  <AntDesign
-                    name="infocirlceo"
-                    size={sizes.icon}
-                    color={colors.white}
-                  />
-                  <TextComponent color={colors.white} text="Chi tiết" />
-                </Row>
-              </TouchableOpacity>
-            </Row>
-          </Row>
-        </View>
-      </View>
+            )}
 
-      <Space height={24} />
-      <Section>
-        <CategoryComponent text={text} slug={slug} showArrow />
-      </Section>
-      <Space height={8} />
-    </>
+            <Space height={20} />
+
+            <Row alignItems="flex-end">
+              <Row
+                styles={{
+                  height: 80,
+                  marginBottom: 4,
+                }}
+                alignItems="center">
+                <TouchableOpacity onPress={() => addFavoriteMovie(currentItem)}>
+                  <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                    {favorites.filter(
+                      (item: Movie) => item.name === currentItem.name,
+                    ).length > 0 ? (
+                      <Entypo
+                        name="check"
+                        size={sizes.icon}
+                        color={colors.white}
+                      />
+                    ) : (
+                      <Entypo
+                        name="plus"
+                        size={sizes.icon}
+                        color={colors.white}
+                      />
+                    )}
+                    <TextComponent color={colors.white} text="Danh sách" />
+                  </Row>
+                </TouchableOpacity>
+                <Space width={28} />
+                <Button
+                  icon={
+                    <Entypo
+                      color={colors.black}
+                      name="controller-play"
+                      size={20}
+                    />
+                  }
+                  radius={6}
+                  styles={{paddingVertical: 2, paddingHorizontal: 16}}
+                  textStyleProps={{
+                    fontFamily: fontFamilies.firaSemiBold,
+                    fontSize: sizes.text,
+                    marginBottom: 3,
+                  }}
+                  color={colors.white}
+                  title="Xem ngay"
+                  onPress={() =>
+                    navigation.navigate('MovieDetails', {movie: currentItem})
+                  }
+                />
+                <Space width={28} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('MovieDetails', {movie: currentItem})
+                  }>
+                  <Row styles={{flexDirection: 'column', marginBottom: 12}}>
+                    <AntDesign
+                      name="infocirlceo"
+                      size={sizes.icon}
+                      color={colors.white}
+                    />
+                    <TextComponent color={colors.white} text="Chi tiết" />
+                  </Row>
+                </TouchableOpacity>
+              </Row>
+            </Row>
+          </View>
+        </View>
+
+        <Space height={24} />
+        <Section>
+          <CategoryComponent text={text} slug={slug} showArrow />
+        </Section>
+        <Space height={8} />
+      </>
+    ),
+    [movies, currentItem, text, slug, navigation],
   );
 
   const renderFooter = () => {
