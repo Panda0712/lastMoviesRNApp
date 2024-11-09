@@ -1,4 +1,4 @@
-import {Button, Input, Section, Space} from '@bsdaoquang/rncomponent';
+import {Button, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import {useState} from 'react';
 import {Alert, TouchableOpacity, View} from 'react-native';
@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
+import Input from '../../components/InputComponent';
 
 const PasswordReset = ({navigation}: any) => {
   const [oldPassword, setOldPassword] = useState('');

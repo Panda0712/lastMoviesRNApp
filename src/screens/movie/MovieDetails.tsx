@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
+import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useState} from 'react';
@@ -19,6 +19,7 @@ import {Movie, MovieLikes, MoviesInfo, Reviews} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
 import {parseTime} from '../../utils/helpers';
+import Input from '../../components/InputComponent';
 
 const MovieDetails = ({navigation, route}: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);

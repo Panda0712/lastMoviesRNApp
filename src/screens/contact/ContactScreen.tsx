@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Input, Space} from '@bsdaoquang/rncomponent';
+import {Button, Space} from '@bsdaoquang/rncomponent';
 import firestore from '@react-native-firebase/firestore';
 import {useState} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
@@ -10,6 +10,7 @@ import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
 import {validatePhoneNumber} from '../../utils/helpers';
+import Input from '../../components/InputComponent';
 
 const ContactScreen = ({navigation}: any) => {
   const [feedback, setFeedback] = useState('');
