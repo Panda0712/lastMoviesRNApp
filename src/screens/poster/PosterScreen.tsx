@@ -25,6 +25,7 @@ const PosterScreen = ({navigation}: any) => {
   useEffect(() => {
     if (timeout === 0) {
       navigation.navigate('Main');
+      return;
     }
 
     const timeoutFunc = setInterval(() => {
