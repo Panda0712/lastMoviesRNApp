@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Input, Row, Section, Space} from '@bsdaoquang/rncomponent';
+import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import {useState} from 'react';
 import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
@@ -10,6 +10,7 @@ import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
 import {validateEmail} from '../../utils/helpers';
+import Input from '../../components/InputComponent';
 
 const ForgotPassword = ({navigation}: any) => {
   const [email, setEmail] = useState('');
