@@ -60,7 +60,7 @@ const PosterScreen = ({navigation}: any) => {
           </TouchableOpacity>
         </Section>
         <ImageBackground
-          source={{uri: posterMovie?.poster_url}}
+          source={{uri: posterMovie?.thumb_url}}
           width={100}
           height={100}
           resizeMode="cover"

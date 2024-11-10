@@ -2,14 +2,8 @@
 import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {useEffect, useState} from 'react';
-import {
-  Image,
-  ImageBackground,
-  ImageBackgroundBase,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
+import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -46,24 +40,28 @@ const initialValue = {
   casts: '',
 };
 
+const homeContent = [
+  {title: 'Phim bộ', slug: 'phim-bo'},
+  {title: 'Phim lẻ', slug: 'phim-le'},
+  {title: 'Hành động', slug: 'hanh-dong'},
+  {title: 'Tình cảm', slug: 'tinh-cam'},
+  {title: 'Chương trình truyền hình', slug: 'tv-shows'},
+  {title: 'Tâm lý', slug: 'tam-ly'},
+  {title: 'Phim hài', slug: 'phim-hai'},
+  {title: 'Hoạt hình', slug: 'hoat-hinh'},
+  {title: 'Giả tưởng', slug: 'gia-tuong'},
+];
+
 const HomeScreen = ({navigation}: any) => {
   const [streamingMovies, setStreamingMovies] = useState<Movie[]>([]);
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
-  const [seriesMovies, setSeriesMovies] = useState<Movie[]>([]);
-  const [cinemaMovies, setCinemaMovies] = useState<Movie[]>([]);
-  const [actionMovies, setActionMovies] = useState<Movie[]>([]);
-  const [loveMovies, setLoveMovies] = useState<Movie[]>([]);
-  const [tvShows, setTVShows] = useState<Movie[]>([]);
-  const [mentalMovies, setMentalMovies] = useState<Movie[]>([]);
-  const [funnyMovies, setFunnyMovies] = useState<Movie[]>([]);
-  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
-  const [magicMovies, setMagicMovies] = useState<Movie[]>([]);
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
+  const [homeMovies, setHomeMovies] = useState<Movie[][]>([]);
 
   const userId = auth().currentUser?.uid;
 
-  const getFavoritesMovies = () => {
+  const getFavoritesMovies = useCallback(() => {
     firestore()
       .collection('favorites')
       .doc(userId)
@@ -71,113 +69,86 @@ const HomeScreen = ({navigation}: any) => {
         const existingFavorites = item.data()?.favorites || [];
         setFavorites(existingFavorites);
       });
-  };
+  }, [userId]);
 
-  const addFavoriteMovie = async (movieItem: Movie) => {
-    if (!userId) return;
-    const userRef = firestore().collection('favorites').doc(userId);
-    const userDoc = await userRef.get();
-    if (userDoc.exists) {
-      const existingFavorites = userDoc.data()?.favorites || [];
-      const specificItem = existingFavorites.filter(
-        (item: Movie) => item.name === movieItem.name,
-      );
-      const updatedFavorites =
-        specificItem.length > 0
-          ? existingFavorites.filter(
-              (item: Movie) => item.name !== movieItem.name,
-            )
-          : [...existingFavorites, movieItem];
-      await userRef.update({favorites: updatedFavorites});
-      Toast.show({
-        type: 'success',
-        text1: 'Thông báo',
-        text2:
+  const addFavoriteMovie = useCallback(
+    async (movieItem: Movie) => {
+      if (!userId) return;
+      const userRef = firestore().collection('favorites').doc(userId);
+      const userDoc = await userRef.get();
+      if (userDoc.exists) {
+        const existingFavorites = userDoc.data()?.favorites || [];
+        const specificItem = existingFavorites.filter(
+          (item: Movie) => item.name === movieItem.name,
+        );
+        const updatedFavorites =
           specificItem.length > 0
-            ? 'Xóa khỏi danh sách thành công'
-            : 'Thêm vào danh sách yêu thích thành công',
-      });
-    } else {
-      await userRef.set({
-        id: userId,
-        favorites: [movieItem],
-      });
-    }
-  };
+            ? existingFavorites.filter(
+                (item: Movie) => item.name !== movieItem.name,
+              )
+            : [...existingFavorites, movieItem];
+        await userRef.update({favorites: updatedFavorites});
+        Toast.show({
+          type: 'success',
+          text1: 'Thông báo',
+          text2:
+            specificItem.length > 0
+              ? 'Xóa khỏi danh sách thành công'
+              : 'Thêm vào danh sách yêu thích thành công',
+        });
+      } else {
+        await userRef.set({
+          id: userId,
+          favorites: [movieItem],
+        });
+      }
+    },
+    [userId],
+  );
 
-  const getMovies = async () => {
+  const getMovies = useCallback(async () => {
     const item: any = await getStreamingMovies();
     setStreamingMovies(item);
     setCurrentItem(item[0]);
-  };
+  }, []);
 
-  const getCurrentMoviesHome = async () => {
+  const getCurrentMoviesHome = useCallback(async () => {
     try {
       const item: any = await getCurrentMovies();
       setCurrentMovies(item);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
-  async function getCurrentSeriesMovies() {
-    const item: any = await getSpecificCategoryMovies('phim-bo');
-    setSeriesMovies(item);
-  }
+  const getHomeMovies = useCallback(async () => {
+    try {
+      const moviePromises = homeContent.map(item =>
+        getSpecificCategoryMovies(item.slug),
+      );
+      const movies = await Promise.all(moviePromises);
+      setHomeMovies(movies);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
-  const getCurrentCinemaMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('phim-le');
-    setCinemaMovies(item);
-  };
-
-  const getCurrentActionMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('hanh-dong');
-    setActionMovies(item);
-  };
-
-  const getCurrentLoveMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('tinh-cam');
-    setLoveMovies(item);
-  };
-
-  const getCurrentTVShows = async () => {
-    const item: any = await getSpecificCategoryMovies('tv-shows');
-    setTVShows(item);
-  };
-
-  const getCurrentMentalMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('tam-ly');
-    setMentalMovies(item);
-  };
-
-  const getCurrentFunnyMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('phim-hai');
-    setFunnyMovies(item);
-  };
-
-  const getCurrentAnimeMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('hoat-hinh');
-    setAnimeMovies(item);
-  };
-
-  const getCurrentMagicMovies = async () => {
-    const item: any = await getSpecificCategoryMovies('gia-tuong');
-    setMagicMovies(item);
-  };
+  const renderSection = useCallback(
+    (title: string, slug: string, index: number) => (
+      <Section key={index}>
+        <CategoryComponent text={title} slug={slug} />
+        <Space height={8} />
+        <FlatListComponent data={homeMovies[index] ?? []} />
+      </Section>
+    ),
+    [homeMovies],
+  );
 
   useEffect(() => {
     getMovies();
     getCurrentMoviesHome();
-    getCurrentSeriesMovies();
-    getCurrentCinemaMovies();
-    getCurrentActionMovies();
-    getCurrentLoveMovies();
-    getCurrentTVShows();
-    getCurrentMentalMovies();
+    getHomeMovies();
     getFavoritesMovies();
-    getCurrentFunnyMovies();
-    getCurrentAnimeMovies();
-    getCurrentMagicMovies();
   }, []);
 
   return (
@@ -341,59 +312,9 @@ const HomeScreen = ({navigation}: any) => {
         <FlatListComponent data={currentMovies} />
       </Section>
 
-      <Section>
-        <CategoryComponent text="Phim bộ" slug="phim-bo" />
-        <Space height={8} />
-        <FlatListComponent data={seriesMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Phim lẻ" slug="phim-le" />
-        <Space height={8} />
-        <FlatListComponent data={cinemaMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Hành động" slug="hanh-dong" />
-        <Space height={8} />
-        <FlatListComponent data={actionMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Tình cảm" slug="tinh-cam" />
-        <Space height={8} />
-        <FlatListComponent data={loveMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="TV Shows" slug="tv-shows" />
-        <Space height={8} />
-        <FlatListComponent data={tvShows} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Tâm lý" slug="tam-ly" />
-        <Space height={8} />
-        <FlatListComponent data={mentalMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Phim hài" slug="phim-hai" />
-        <Space height={8} />
-        <FlatListComponent data={funnyMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Hoạt hình" slug="hoat-hinh" />
-        <Space height={8} />
-        <FlatListComponent data={animeMovies} />
-      </Section>
-
-      <Section>
-        <CategoryComponent text="Giả tưởng" slug="gia-tuong" />
-        <Space height={8} />
-        <FlatListComponent data={magicMovies} />
-      </Section>
+      {homeContent.map((item, index) =>
+        renderSection(item.title, item.slug, index),
+      )}
     </Container>
   );
 };
