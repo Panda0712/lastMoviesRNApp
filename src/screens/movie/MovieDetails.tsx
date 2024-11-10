@@ -594,6 +594,7 @@ const MovieDetails = ({navigation, route}: any) => {
                             text={item.user}
                           />
                           <TextComponent
+                            styles={{maxWidth: sizes.width * 0.5}}
                             color={colors.white}
                             text={item.userComments}
                           />

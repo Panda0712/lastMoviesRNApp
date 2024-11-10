@@ -91,12 +91,12 @@ const ForgotPassword = ({navigation}: any) => {
                 height: sizes.height,
               }}>
               <Image
-                source={require('../../assets/images/forget-password.png')}
+                source={require('../../assets/images/forgot2.png')}
                 width={50}
                 height={50}
-                style={{width: 200, height: 200}}
+                style={{width: 200, height: 200, borderRadius: 10}}
               />
-              <Space height={16} />
+              <Space height={24} />
               <Row alignItems="flex-start" styles={{flexDirection: 'column'}}>
                 <TextComponent
                   font={fontFamilies.firaSemiBold}

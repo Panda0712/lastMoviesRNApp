@@ -57,8 +57,6 @@ const Login = ({navigation}: any) => {
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo?.data?.idToken;
 
-      console.log(userInfo);
-
       if (!idToken) {
         throw new Error('Failed to get idToken from Google Sign-in');
       }

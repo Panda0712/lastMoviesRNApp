@@ -13,6 +13,7 @@ import MovieDetails from './movie/MovieDetails';
 import PasswordReset from './password/PasswordReset';
 import PosterScreen from './poster/PosterScreen';
 import ProfileScreen from './profile/ProfileScreen';
+import UpdateProfile from './profile/UpdateProfile';
 import SearchScreen from './search/SearchScreen';
 import UserScreen from './user/UserScreen';
 
@@ -34,4 +35,5 @@ export {
   PasswordReset,
   ForgotPassword,
   PosterScreen,
+  UpdateProfile,
 };

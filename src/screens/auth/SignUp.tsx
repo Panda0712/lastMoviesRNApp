@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {Button, Input, Row, Space} from '@bsdaoquang/rncomponent';
+import {Button, Row, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useEffect, useState} from 'react';
@@ -13,30 +13,22 @@ import {
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Container, TextComponent} from '../../components';
+import Input from '../../components/InputComponent';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
 import {Auth} from '../../utils/handleAuth';
 import {validateEmail} from '../../utils/helpers';
 
-const initialValue = {
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
-
 const SignUp = ({navigation}: any) => {
-  const [signUpForm, setSignUpForm] = useState(initialValue);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async () => {
-    if (
-      !signUpForm.email ||
-      !signUpForm.password ||
-      !signUpForm.username ||
-      !signUpForm.confirmPassword
-    ) {
+    if (!email || !password || !username || !confirmPassword) {
       Toast.show({
         type: 'error',
         text1: 'Thông báo',
@@ -45,25 +37,39 @@ const SignUp = ({navigation}: any) => {
       return;
     }
 
+    if (password !== confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Mật khẩu nhập lại chưa chính xác',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const credentialUser = await auth().createUserWithEmailAndPassword(
-        signUpForm.email,
-        signUpForm.password,
+        email,
+        password,
       );
 
       const user = credentialUser.user;
       if (user) {
-        if (signUpForm.username) {
+        if (username) {
           await user.updateProfile({
-            displayName: signUpForm.username,
+            displayName: username,
           });
         }
         await Auth.createProfile();
       }
       setIsLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Mail đã được sử dụng! Vui lòng thử lại!',
+      });
       setIsLoading(false);
     }
   };
@@ -73,8 +79,6 @@ const SignUp = ({navigation}: any) => {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo?.data?.idToken;
-
-      console.log(userInfo);
 
       if (!idToken) {
         throw new Error('Failed to get idToken from Google Sign-in');
@@ -91,16 +95,6 @@ const SignUp = ({navigation}: any) => {
         text2: 'Lỗi đăng nhập với Google! Vui lòng thử lại',
       });
     }
-  };
-
-  const handleChangeValue = (key: string, value: string) => {
-    if (!key || !value) {
-      return;
-    }
-
-    const items: any = {...signUpForm};
-    items[`${key}`] = value;
-    setSignUpForm(items);
   };
 
   useEffect(() => {
@@ -161,8 +155,8 @@ const SignUp = ({navigation}: any) => {
                   helpText="Hãy nhập tên"
                   label="Tên người dùng"
                   placeholder="Nhập tên người dùng"
-                  value={signUpForm.username}
-                  onChange={val => handleChangeValue('username', val)}
+                  value={username}
+                  onChange={setUsername}
                 />
                 <Input
                   clear
@@ -173,14 +167,14 @@ const SignUp = ({navigation}: any) => {
                   }}
                   required
                   helpText={
-                    !validateEmail(signUpForm.email)
+                    !validateEmail(email)
                       ? 'Hãy nhập đúng định dạng email'
                       : 'Hãy nhập email'
                   }
                   label="Email"
                   placeholder="Nhập email"
-                  value={signUpForm.email}
-                  onChange={val => handleChangeValue('email', val)}
+                  value={email}
+                  onChange={setEmail}
                 />
                 <Input
                   clear
@@ -194,8 +188,8 @@ const SignUp = ({navigation}: any) => {
                   helpText="Hãy nhập mật khẩu"
                   label="Mật khẩu"
                   placeholder="Nhập mật khẩu"
-                  value={signUpForm.password}
-                  onChange={val => handleChangeValue('password', val)}
+                  value={password}
+                  onChange={setPassword}
                 />
                 <Input
                   clear
@@ -206,15 +200,15 @@ const SignUp = ({navigation}: any) => {
                   }}
                   required
                   helpText={
-                    signUpForm.password === signUpForm.confirmPassword
+                    password !== confirmPassword
                       ? 'Mật khẩu nhập lại chưa đúng'
                       : 'Hãy nhập lại mật khẩu'
                   }
                   password
                   label="Nhập lại mật khẩu"
                   placeholder="Nhập lại mật khẩu"
-                  value={signUpForm.confirmPassword}
-                  onChange={val => handleChangeValue('confirmPassword', val)}
+                  value={confirmPassword}
+                  onChange={setConfirmPassword}
                 />
                 <Space height={12} />
                 <Button

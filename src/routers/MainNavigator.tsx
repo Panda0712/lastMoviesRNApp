@@ -7,6 +7,7 @@ import {
   MovieDetails,
   PosterScreen,
   SearchScreen,
+  UpdateProfile,
   UserScreen,
 } from '../screens';
 import PasswordReset from '../screens/password/PasswordReset';
@@ -27,6 +28,7 @@ const MainNavigator = () => {
       <Stack.Screen name="AboutScreen" component={AboutScreen} />
       <Stack.Screen name="UserScreen" component={UserScreen} />
       <Stack.Screen name="PasswordScreen" component={PasswordReset} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
     </Stack.Navigator>
   );
 };

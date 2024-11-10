@@ -61,8 +61,8 @@ const PosterScreen = ({navigation}: any) => {
         </Section>
         <ImageBackground
           source={{uri: posterMovie?.thumb_url}}
-          width={100}
-          height={100}
+          width={200}
+          height={200}
           resizeMode="cover"
           style={{width: sizes.width, height: sizes.height}}></ImageBackground>
         <Section

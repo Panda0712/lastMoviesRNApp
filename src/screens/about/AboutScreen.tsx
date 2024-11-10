@@ -20,7 +20,7 @@ const AboutScreen = ({navigation}: any) => {
         </TouchableOpacity>
       }
       style={{backgroundColor: colors.black5, padding: 16}}>
-      <Section>
+      <Section styles={{paddingBottom: 24}}>
         <View style={{alignItems: 'center', paddingBottom: 15}}>
           <Image
             source={require('../../assets/images/logo.png')}

@@ -74,7 +74,7 @@ const ProfileScreen = ({navigation}: any) => {
         )}
       </Row>
       <Space height={30} />
-      <Section>
+      <Section styles={{paddingBottom: 30}}>
         <Row styles={{flexDirection: 'column'}}>
           <Row
             onPress={toggleExaple}
@@ -111,7 +111,7 @@ const ProfileScreen = ({navigation}: any) => {
                   styles={{
                     width: '100%',
                     borderBottomColor: colors.black2,
-                    borderWidth: 1,
+                    borderBottomWidth: 1,
                     paddingBottom: 8,
                   }}
                   onPress={() => {}}>
@@ -136,7 +136,7 @@ const ProfileScreen = ({navigation}: any) => {
                       styles={{
                         width: '100%',
                         borderBottomColor: colors.black2,
-                        borderWidth: 1,
+                        borderBottomWidth: 1,
                         paddingBottom: 8,
                       }}
                       onPress={() => navigation.navigate('PasswordScreen')}>
