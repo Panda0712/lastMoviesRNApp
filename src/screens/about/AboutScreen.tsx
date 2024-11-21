@@ -5,6 +5,8 @@ import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {Section} from '@bsdaoquang/rncomponent';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const AboutScreen = ({navigation}: any) => {
   return (
@@ -20,7 +22,7 @@ const AboutScreen = ({navigation}: any) => {
         </TouchableOpacity>
       }
       style={{backgroundColor: colors.black5, padding: 16}}>
-      <Section styles={{paddingBottom: 24}}>
+      <Section styles={{paddingBottom: 80}}>
         <View style={{alignItems: 'center', paddingBottom: 15}}>
           <Image
             source={require('../../assets/images/logo.png')}
@@ -52,33 +54,41 @@ const AboutScreen = ({navigation}: any) => {
             style={styless.icon}
           />
           <TextComponent
-            text="Hotline: 111111111"
+            text="0369332842"
             color={colors.white}
             styles={styless.contactText}
           />
         </View>
         <View style={styless.contactRow}>
-          <Ionicons
-            name="globe"
+          <MaterialCommunityIcons
+            name="email"
             size={20}
             color={colors.white}
             style={styless.icon}
           />
           <TextComponent
-            text="Trang chủ: "
+            text="flickster@gmail.com"
             color={colors.white}
             styles={styless.contactText}
           />
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('HomeScreen');
-            }}>
-            <TextComponent
-              text="Tại đây"
-              color={colors.blue}
-              styles={styless.link}
-            />
-          </TouchableOpacity>
+        </View>
+        <View style={styless.contactRow}>
+          <FontAwesome6
+            name="location-dot"
+            size={20}
+            color={colors.white}
+            style={styless.icon}
+          />
+          <TextComponent
+            text="280 An Dương Vương, phường 4, quận 5, TPHCM"
+            color={colors.white}
+            styles={
+              (styless.contactText,
+              {
+                maxWidth: 320,
+              })
+            }
+          />
         </View>
       </Section>
     </Container>

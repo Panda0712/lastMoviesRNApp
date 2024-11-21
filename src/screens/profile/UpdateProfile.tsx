@@ -1,10 +1,21 @@
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {Container} from '../../components';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {colors} from '../../constants/colors';
 
-const UpdateProfile = () => {
+const UpdateProfile = ({navigation}: any) => {
   return (
-    <View>
+    <Container
+      fixed
+      title="Cập nhật thông tin"
+      back={
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={24} color={colors.white} />
+        </TouchableOpacity>
+      }
+      style={{backgroundColor: colors.black5}}>
       <Text>UpdateProfile</Text>
-    </View>
+    </Container>
   );
 };
 

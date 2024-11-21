@@ -82,7 +82,7 @@ const ContactScreen = ({navigation}: any) => {
             ? 'Hãy nhập đúng số điện thoại'
             : 'Vui lòng nhập số điện thoại'
         }
-        color={colors.black}
+        color={colors.black5}
         inputStyles={{color: colors.grey}}
         placeholder="Nhập số điện thoại"
         radius={6}
@@ -97,7 +97,7 @@ const ContactScreen = ({navigation}: any) => {
         helpText="Vui lòng nhập nội dung"
         styles={[styles.input]}
         radius={2}
-        color={colors.black}
+        color={colors.black5}
         value={feedback}
         textAreal
         inputStyles={{color: colors.grey}}

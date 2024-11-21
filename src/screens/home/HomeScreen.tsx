@@ -3,11 +3,18 @@ import {Button, Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useCallback, useEffect, useState} from 'react';
-import {Image, ImageBackground, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toast from 'react-native-toast-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import CategoryComponent from '../../components/CategoryComponent';
@@ -21,6 +28,8 @@ import {
   getSpecificCategoryMovies,
   getStreamingMovies,
 } from '../../lib/actions';
+import Feather from 'react-native-vector-icons/Feather';
+import {category} from '../../constants/category';
 
 const initialValue = {
   name: '',
@@ -42,12 +51,16 @@ const initialValue = {
 
 const homeContent = [
   {title: 'Phim bộ', slug: 'phim-bo'},
+  {title: 'Phiêu lưu', slug: 'phieu-luu', poster: true},
   {title: 'Phim lẻ', slug: 'phim-le'},
   {title: 'Hành động', slug: 'hanh-dong'},
+  {title: 'Lãng mạn', slug: 'lang-man', poster: true},
   {title: 'Tình cảm', slug: 'tinh-cam'},
   {title: 'Chương trình truyền hình', slug: 'tv-shows'},
+  {title: 'Khoa học viễn tưởng', slug: 'khoa-hoc-vien-tuong', poster: true},
   {title: 'Tâm lý', slug: 'tam-ly'},
   {title: 'Phim hài', slug: 'phim-hai'},
+  {title: 'Gia đình', slug: 'gia-dinh', poster: true},
   {title: 'Hoạt hình', slug: 'hoat-hinh'},
   {title: 'Giả tưởng', slug: 'gia-tuong'},
 ];
@@ -59,6 +72,7 @@ const HomeScreen = ({navigation}: any) => {
   const [currentItem, setCurrentItem] = useState<Movie>(initialValue);
   const [homeMovies, setHomeMovies] = useState<Movie[][]>([]);
 
+  const user = auth().currentUser;
   const userId = auth().currentUser?.uid;
 
   const getFavoritesMovies = useCallback(() => {
@@ -134,13 +148,53 @@ const HomeScreen = ({navigation}: any) => {
   }, []);
 
   const renderSection = useCallback(
-    (title: string, slug: string, index: number) => (
-      <Section key={index}>
-        <CategoryComponent text={title} slug={slug} />
-        <Space height={8} />
-        <FlatListComponent data={homeMovies[index] ?? []} />
-      </Section>
-    ),
+    (title: string, slug: string, index: number, poster: boolean = false) =>
+      poster ? (
+        <Carousel
+          key={index}
+          containerCustomStyle={{
+            position: 'relative',
+            paddingTop: 13,
+            paddingBottom: 18,
+          }}
+          layout={'default'}
+          layoutCardOffset={18}
+          loop
+          autoplay
+          data={homeMovies[index]}
+          renderItem={({item, index}) => (
+            <Row
+              key={index}
+              onPress={() => navigation.navigate('MovieDetails', {movie: item})}
+              styles={{
+                width: sizes.width,
+                overflow: 'hidden',
+              }}>
+              <Image
+                source={{uri: item.poster_url}}
+                width={50}
+                resizeMode="cover"
+                height={50}
+                style={{
+                  width: sizes.width,
+                  height: 120,
+                  overflow: 'hidden',
+                  shadowColor: colors.black,
+                  shadowOpacity: 0.3,
+                  shadowRadius: 10,
+                }}></Image>
+            </Row>
+          )}
+          sliderWidth={sizes.width}
+          itemWidth={sizes.width}
+        />
+      ) : (
+        <Section key={index}>
+          <CategoryComponent text={title} slug={slug} />
+          <Space height={8} />
+          <FlatListComponent data={homeMovies[index] ?? []} />
+        </Section>
+      ),
     [homeMovies],
   );
 
@@ -189,11 +243,77 @@ const HomeScreen = ({navigation}: any) => {
             width={100}
             height={100}
           />
-          <TouchableOpacity
-            style={{marginBottom: 20}}
-            onPress={() => navigation.navigate('SearchScreen')}>
-            <Ionicons name="search-outline" size={30} color={colors.white} />
-          </TouchableOpacity>
+          <Row>
+            <Feather
+              style={{marginBottom: 20}}
+              name="bell"
+              size={30}
+              color={colors.white}
+            />
+            <Space width={16} />
+            <TouchableOpacity
+              style={{marginBottom: 20}}
+              onPress={() => navigation.navigate('SearchScreen')}>
+              <Ionicons name="search-outline" size={30} color={colors.white} />
+            </TouchableOpacity>
+            <Space width={16} />
+            {user?.photoURL ? (
+              <Row
+                onPress={() => navigation.navigate('ProfileTab')}
+                styles={{
+                  borderColor: colors.white,
+                  borderWidth: 1.5,
+                  position: 'relative',
+                  borderRadius: 100,
+                  marginBottom: 20,
+                  width: 30,
+                  height: 30,
+                  overflow: 'hidden',
+                }}>
+                <Image
+                  source={{uri: user.photoURL}}
+                  width={20}
+                  height={20}
+                  style={{width: 30, height: 30}}
+                />
+              </Row>
+            ) : (
+              <FontAwesome6
+                onPress={() => navigation.navigate('ProfileTab')}
+                name="circle-user"
+                style={{marginBottom: 20}}
+                color={colors.white}
+                size={30}
+              />
+            )}
+          </Row>
+        </Row>
+        <Row justifyContent="flex-start" styles={{paddingBottom: 28}}>
+          <FlatList
+            data={category}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.slug}
+            renderItem={({item, index}) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('CategoryDetails', {
+                    category: 'danh-sach',
+                    slug: item.slug,
+                    text: item.text,
+                  })
+                }
+                key={index}>
+                <TextComponent
+                  font={fontFamilies.firaMedium}
+                  styles={{marginHorizontal: 6}}
+                  text={item.text}
+                  size={sizes.bigTitle}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+            )}
+          />
         </Row>
         <View>
           {streamingMovies.length > 0 && (
@@ -313,7 +433,7 @@ const HomeScreen = ({navigation}: any) => {
       </Section>
 
       {homeContent.map((item, index) =>
-        renderSection(item.title, item.slug, index),
+        renderSection(item.title, item.slug, index, item?.poster),
       )}
     </Container>
   );

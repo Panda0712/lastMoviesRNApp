@@ -4,12 +4,12 @@ import auth from '@react-native-firebase/auth';
 import {useState} from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 const ProfileScreen = ({navigation}: any) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -124,6 +124,31 @@ const ProfileScreen = ({navigation}: any) => {
                   <TextComponent text={userEmail ?? ''} color={colors.white} />
                 </Row>
               </Row>
+
+              <Space height={8} />
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('UpdateProfile')}>
+                <Row
+                  justifyContent="flex-start"
+                  styles={{
+                    width: '100%',
+                    borderBottomColor: colors.black2,
+                    borderBottomWidth: 1,
+                    paddingBottom: 8,
+                  }}>
+                  <Ionicons
+                    name="information-circle-outline"
+                    color={colors.white}
+                    size={sizes.icon}
+                  />
+                  <Space width={12} />
+                  <TextComponent
+                    text="Cập nhật thông tin"
+                    color={colors.white}
+                  />
+                </Row>
+              </TouchableOpacity>
 
               {user?.photoURL ? (
                 <></>
