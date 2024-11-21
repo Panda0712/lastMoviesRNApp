@@ -12,6 +12,7 @@ import {
 } from '../screens';
 import PasswordReset from '../screens/password/PasswordReset';
 import TabNavigator from './TabNavigator';
+import NotificationScreen from '../screens/notification/NotificationScreen';
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -29,6 +30,7 @@ const MainNavigator = () => {
       <Stack.Screen name="UserScreen" component={UserScreen} />
       <Stack.Screen name="PasswordScreen" component={PasswordReset} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
     </Stack.Navigator>
   );
 };
