@@ -176,6 +176,7 @@ const MovieDetails = ({navigation, route}: any) => {
     const commentData = {
       user: user?.displayName,
       userComments: commentValue,
+      userId: user?.uid,
       photoUrl: user?.photoURL ?? '',
       timestamp: new Date(),
     };
@@ -197,6 +198,29 @@ const MovieDetails = ({navigation, route}: any) => {
     setCommentValue('');
   };
 
+  const handleDeleteComment = async (index: number, reviews: Reviews) => {
+    try {
+      await firestore()
+        .collection('reviews')
+        .doc(reviews.id)
+        .update({
+          comments: firestore.FieldValue.arrayRemove(reviews.comments[index]),
+        });
+      Toast.show({
+        type: 'success',
+        text1: 'Thông báo',
+        text2: 'Xóa bình luận thành công',
+      });
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Xóa bình luận thất bại',
+      });
+    }
+  };
+
   useEffect(() => {
     handleGetComments();
     getFavoritesMovies();
@@ -208,6 +232,8 @@ const MovieDetails = ({navigation, route}: any) => {
       handleGetMoviesInfo(movieSlug.toString());
     }
   }, [movieSlug]);
+
+  console.log(reviews);
 
   return (
     <Container style={{backgroundColor: colors.black5}}>
@@ -600,13 +626,30 @@ const MovieDetails = ({navigation, route}: any) => {
                           />
                         </Row>
                       </Row>
-                      <TextComponent
-                        styles={{
-                          textAlign: 'right',
-                        }}
-                        color={colors.grey}
-                        text={parseTime(item.timestamp)}
-                      />
+                      <Row>
+                        <TextComponent
+                          styles={{
+                            textAlign: 'right',
+                          }}
+                          color={colors.grey}
+                          text={parseTime(item.timestamp)}
+                        />
+                        {item?.userId === user?.uid && (
+                          <>
+                            <Space width={8} />
+                            <TouchableOpacity
+                              onPress={() =>
+                                handleDeleteComment(index, reviews[0])
+                              }>
+                              <TextComponent
+                                font={fontFamilies.firaMedium}
+                                text="Xóa"
+                                color={colors.red}
+                              />
+                            </TouchableOpacity>
+                          </>
+                        )}
+                      </Row>
                     </Row>
                   ))}
                 </Row>

@@ -30,6 +30,7 @@ export interface Episodes {
 
 export interface Comments {
   user: string;
+  userId?: string;
   userComments: string;
   timestamp: string;
   photoUrl: string;
