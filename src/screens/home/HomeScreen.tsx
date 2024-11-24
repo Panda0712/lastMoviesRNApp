@@ -244,12 +244,15 @@ const HomeScreen = ({navigation}: any) => {
             height={100}
           />
           <Row>
-            <Feather
-              style={{marginBottom: 20}}
-              name="bell"
-              size={30}
-              color={colors.white}
-            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NotificationScreen')}>
+              <Feather
+                style={{marginBottom: 20}}
+                name="bell"
+                size={30}
+                color={colors.white}
+              />
+            </TouchableOpacity>
             <Space width={16} />
             <TouchableOpacity
               style={{marginBottom: 20}}
