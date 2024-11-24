@@ -82,7 +82,7 @@ const PasswordReset = ({navigation}: any) => {
               color: colors.white,
               fontFamily: fontFamilies.firaMedium,
             }}
-            color={colors.black}
+            color={colors.black5}
             inputStyles={{color: colors.grey}}
             required
             password
@@ -99,7 +99,7 @@ const PasswordReset = ({navigation}: any) => {
             }}
             required
             password
-            color={colors.black}
+            color={colors.black5}
             inputStyles={{color: colors.grey}}
             helpText="Hãy nhập mật khẩu mới"
             label="Mật khẩu mới"
@@ -113,11 +113,15 @@ const PasswordReset = ({navigation}: any) => {
               fontFamily: fontFamilies.firaMedium,
             }}
             label="Xác nhận mật khẩu"
-            color={colors.black}
+            color={colors.black5}
             inputStyles={{color: colors.grey}}
             required
             password
-            helpText="Xác nhận mật khẩu"
+            helpText={
+              newPassword !== verifyPassword
+                ? 'Mật khẩu nhập lại chưa đúng'
+                : 'Hãy nhập lại mật khẩu mới'
+            }
             onChange={setVerifyPassword}
             value={verifyPassword}
             placeholder="Vui lòng nhập lại mật khẩu mới (*)"
@@ -125,6 +129,7 @@ const PasswordReset = ({navigation}: any) => {
           <Space height={40} />
           <Button
             radius={6}
+            styles={{elevation: 0}}
             textStyleProps={{fontFamily: fontFamilies.firaSemiBold}}
             color={colors.red}
             title={'Đổi mật khẩu'}

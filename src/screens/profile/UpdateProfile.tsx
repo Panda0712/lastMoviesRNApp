@@ -1,6 +1,10 @@
 import {Row, Section, Space} from '@bsdaoquang/rncomponent';
 import auth from '@react-native-firebase/auth';
-import {Touchable, TouchableOpacity} from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import {useEffect, useState} from 'react';
+import {TouchableOpacity, View} from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import Toast from 'react-native-toast-message';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,7 +13,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Container, TextComponent} from '../../components';
 import {colors} from '../../constants/colors';
 import {sizes} from '../../constants/sizes';
-import {useEffect} from 'react';
+import {parseDateTime} from '../../utils/helpers';
 
 interface UserProps {
   displayName: string;
@@ -21,9 +25,96 @@ interface UserProps {
 }
 
 const UpdateProfile = ({navigation}: any) => {
-  const user: any = auth().currentUser;
+  const [userData, setUserData] = useState<UserProps>();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {});
+  const user: any = auth().currentUser;
+  const userId = auth().currentUser?.uid;
+
+  const handleCheckUser = () => {
+    firestore()
+      .collection('users')
+      .doc(userId)
+      .onSnapshot((item: any) => {
+        const existingUser = item.data() || {};
+        setUserData(existingUser);
+      });
+  };
+
+  const handleUpdateGender = async (value: string) => {
+    try {
+      await firestore().collection('users').doc(userId).update({gender: value});
+
+      setIsExpanded(false);
+      Toast.show({
+        type: 'success',
+        text1: 'Thông báo',
+        text2: 'Cập nhật giới tính thành công',
+      });
+    } catch (error) {
+      console.log(error);
+      setIsExpanded(false);
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Cập nhật giới tính thất bại',
+      });
+    }
+  };
+
+  const handlePassword = async () => {
+    if (!userData) {
+      try {
+        const data = {
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+          emailVerified: user.emailVerified,
+          photoUrl: user.photoURL,
+          creationTime: user.metadata.creationTime,
+          lastSignInTime: user.metadata.lastSignInTime,
+        };
+
+        await firestore().collection('users').doc(user.uid).set(data);
+
+        console.log('User created');
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    navigation.navigate('PasswordScreen');
+  };
+
+  const handleUpdateBirthday = async (date: string) => {
+    try {
+      await firestore()
+        .collection('users')
+        .doc(userId)
+        .update({birthday: date});
+
+      setOpen(false);
+      Toast.show({
+        type: 'success',
+        text1: 'Thông báo',
+        text2: 'Cập nhật ngày sinh thành công',
+      });
+    } catch (error) {
+      console.log(error);
+      setOpen(false);
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: 'Cập nhật ngày sinh thất bại',
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleCheckUser();
+  }, []);
+
+  console.log(userData);
 
   return (
     <Container
@@ -63,7 +154,7 @@ const UpdateProfile = ({navigation}: any) => {
               />
             </Row>
             <TextComponent
-              text={user?.displayName ?? ''}
+              text={userData?.displayName ?? ''}
               color={colors.white}
               size={sizes.bigTitle}
             />
@@ -108,7 +199,7 @@ const UpdateProfile = ({navigation}: any) => {
                 color={colors.white}
               />
             </Row>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handlePassword()}>
               <Row>
                 <TextComponent
                   text="Cập nhật"
@@ -141,11 +232,19 @@ const UpdateProfile = ({navigation}: any) => {
                 color={colors.white}
               />
             </Row>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('UpdateScreen', {
+                  infor: 'phoneNumber',
+                  title: 'Số điện thoại',
+                  userId,
+                  userData,
+                })
+              }>
               <Row>
                 <TextComponent
-                  text={user?.phoneNumber ?? 'Cập nhật'}
-                  color={user?.phoneNumber ? colors.white : colors.yellow3}
+                  text={userData?.phoneNumber ?? 'Cập nhật'}
+                  color={userData?.phoneNumber ? colors.white : colors.yellow3}
                   size={sizes.bigTitle}
                 />
                 <Space width={4} />
@@ -174,11 +273,11 @@ const UpdateProfile = ({navigation}: any) => {
                 color={colors.white}
               />
             </Row>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
               <Row>
                 <TextComponent
-                  text={user?.gender ?? 'Cập nhật'}
-                  color={user?.gender ? colors.white : colors.yellow3}
+                  text={userData?.gender ?? 'Cập nhật'}
+                  color={userData?.gender ? colors.white : colors.yellow3}
                   size={sizes.bigTitle}
                 />
                 <Space width={4} />
@@ -188,6 +287,60 @@ const UpdateProfile = ({navigation}: any) => {
                   color={colors.yellow3}
                 />
               </Row>
+
+              {isExpanded && (
+                <Row
+                  styles={{
+                    flexDirection: 'column',
+                    position: 'absolute',
+                    paddingHorizontal: 2,
+                    paddingVertical: 4,
+                    bottom: -110,
+                    right: 0,
+                    zIndex: 1000,
+                    width: 110,
+                    backgroundColor: colors.black2,
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => handleUpdateGender('Nam')}>
+                    <TextComponent text="Nam" color={colors.white} />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 110,
+                      height: 2,
+                      backgroundColor: colors.grey4,
+                      marginVertical: 4,
+                    }}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => handleUpdateGender('Nữ')}>
+                    <TextComponent text="Nữ" color={colors.white} />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 110,
+                      height: 2,
+                      backgroundColor: colors.grey4,
+                      marginVertical: 4,
+                    }}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => handleUpdateGender('Không tiết lộ')}>
+                    <TextComponent text="Không tiết lộ" color={colors.white} />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 110,
+                      height: 2,
+                      marginTop: 4,
+                    }}
+                  />
+                </Row>
+              )}
             </TouchableOpacity>
           </Row>
 
@@ -207,11 +360,13 @@ const UpdateProfile = ({navigation}: any) => {
                 color={colors.white}
               />
             </Row>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style={{zIndex: -1}}
+              onPress={() => setOpen(true)}>
               <Row>
                 <TextComponent
-                  text={user?.birthday ?? 'Cập nhật'}
-                  color={user?.birthday ? colors.white : colors.yellow3}
+                  text={userData?.birthday ?? 'Cập nhật'}
+                  color={userData?.birthday ? colors.white : colors.yellow3}
                   size={sizes.bigTitle}
                 />
                 <Space width={4} />
@@ -222,11 +377,28 @@ const UpdateProfile = ({navigation}: any) => {
                 />
               </Row>
             </TouchableOpacity>
+            <DatePicker
+              modal
+              title="Chọn ngày"
+              confirmText="Cập nhật"
+              cancelText="Thoát"
+              mode="date"
+              open={open}
+              date={new Date()}
+              onConfirm={date => {
+                setOpen(false);
+                const {formattedDate} = parseDateTime(date.toString());
+                handleUpdateBirthday(formattedDate);
+              }}
+              onCancel={() => {
+                setOpen(false);
+              }}
+            />
           </Row>
         </Row>
       </Section>
 
-      <Space height={16} />
+      <Space height={30} />
 
       <Section styles={{paddingVertical: 4}}>
         <TextComponent

@@ -14,6 +14,7 @@ import PasswordReset from './password/PasswordReset';
 import PosterScreen from './poster/PosterScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import UpdateProfile from './profile/UpdateProfile';
+import UpdateSpecificInfor from './profile/UpdateSpecificInfor';
 import SearchScreen from './search/SearchScreen';
 import UserScreen from './user/UserScreen';
 
@@ -36,4 +37,5 @@ export {
   ForgotPassword,
   PosterScreen,
   UpdateProfile,
+  UpdateSpecificInfor,
 };
