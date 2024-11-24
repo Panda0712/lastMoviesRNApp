@@ -153,11 +153,30 @@ const UpdateProfile = ({navigation}: any) => {
                 color={colors.white}
               />
             </Row>
-            <TextComponent
-              text={userData?.displayName ?? ''}
-              color={colors.white}
-              size={sizes.bigTitle}
-            />
+
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('UpdateScreen', {
+                  infor: 'displayName',
+                  title: 'tên người dùng',
+                  userId,
+                  userData,
+                })
+              }>
+              <Row>
+                <TextComponent
+                  text={userData?.displayName ?? ''}
+                  color={colors.white}
+                  size={sizes.bigTitle}
+                />
+                <Space width={4} />
+                <Entypo
+                  name="chevron-right"
+                  size={sizes.icon}
+                  color={colors.yellow3}
+                />
+              </Row>
+            </TouchableOpacity>
           </Row>
 
           <Space height={12} />
