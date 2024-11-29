@@ -51,7 +51,7 @@ const UpdateProfile = ({navigation}: any) => {
   };
 
   const handleUpdateGender = async (value: string) => {
-    if (!userData) {
+    if (!userData || Object.keys(userData).length === 0) {
       try {
         const data = {
           email: user.email ?? '',
@@ -62,7 +62,7 @@ const UpdateProfile = ({navigation}: any) => {
           lastSignInTime: user.metadata.lastSignInTime,
         };
 
-        await firestore().collection('users').doc(user.uid).set(data);
+        await firestore().collection('users').doc(userId).set(data);
 
         console.log('User created');
       } catch (error) {
@@ -91,7 +91,7 @@ const UpdateProfile = ({navigation}: any) => {
   };
 
   const handlePassword = async (url: string, params: Params) => {
-    if (!userData) {
+    if (!userData || Object.keys(userData).length === 0) {
       try {
         const data = {
           email: user.email ?? '',
@@ -102,7 +102,7 @@ const UpdateProfile = ({navigation}: any) => {
           lastSignInTime: user.metadata.lastSignInTime,
         };
 
-        await firestore().collection('users').doc(user.uid).set(data);
+        await firestore().collection('users').doc(userId).set(data);
 
         console.log('User created');
       } catch (error) {
@@ -114,7 +114,7 @@ const UpdateProfile = ({navigation}: any) => {
   };
 
   const handleUpdateBirthday = async (date: string) => {
-    if (!userData) {
+    if (!userData || Object.keys(userData).length === 0) {
       try {
         const data = {
           email: user.email ?? '',
@@ -125,7 +125,7 @@ const UpdateProfile = ({navigation}: any) => {
           lastSignInTime: user.metadata.lastSignInTime,
         };
 
-        await firestore().collection('users').doc(user.uid).set(data);
+        await firestore().collection('users').doc(userId).set(data);
 
         console.log('User created');
       } catch (error) {
@@ -251,40 +251,41 @@ const UpdateProfile = ({navigation}: any) => {
           {userData?.photoUrl ? (
             <></>
           ) : (
-            <Row styles={{width: '100%'}} justifyContent="space-between">
-              <Row>
-                <MaterialIcons
-                  name="password"
-                  size={sizes.icon}
-                  color={colors.white}
-                />
-                <Space width={8} />
-                <TextComponent
-                  text="Mật khẩu"
-                  size={sizes.bigTitle}
-                  color={colors.white}
-                />
-              </Row>
-              <TouchableOpacity
-                onPress={() => handlePassword('PasswordScreen', {})}>
+            <>
+              <Row styles={{width: '100%'}} justifyContent="space-between">
                 <Row>
-                  <TextComponent
-                    text="Cập nhật"
-                    color={colors.yellow3}
-                    size={sizes.bigTitle}
-                  />
-                  <Space width={4} />
-                  <Entypo
-                    name="chevron-right"
+                  <MaterialIcons
+                    name="password"
                     size={sizes.icon}
-                    color={colors.yellow3}
+                    color={colors.white}
+                  />
+                  <Space width={8} />
+                  <TextComponent
+                    text="Mật khẩu"
+                    size={sizes.bigTitle}
+                    color={colors.white}
                   />
                 </Row>
-              </TouchableOpacity>
-            </Row>
+                <TouchableOpacity
+                  onPress={() => handlePassword('PasswordScreen', {})}>
+                  <Row>
+                    <TextComponent
+                      text="Cập nhật"
+                      color={colors.yellow3}
+                      size={sizes.bigTitle}
+                    />
+                    <Space width={4} />
+                    <Entypo
+                      name="chevron-right"
+                      size={sizes.icon}
+                      color={colors.yellow3}
+                    />
+                  </Row>
+                </TouchableOpacity>
+              </Row>
+              <Space height={12} />
+            </>
           )}
-
-          <Space height={12} />
 
           <Row styles={{width: '100%'}} justifyContent="space-between">
             <Row>
