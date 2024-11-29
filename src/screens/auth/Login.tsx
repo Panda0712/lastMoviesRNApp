@@ -53,6 +53,8 @@ const Login = ({navigation}: any) => {
 
   const handleLoginWithGoogle = async () => {
     try {
+      await GoogleSignin.signOut();
+
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo?.data?.idToken;
