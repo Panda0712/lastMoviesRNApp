@@ -23,6 +23,7 @@ const UpdateSpecificInfor = ({navigation, route}: any) => {
         text1: 'Thông báo',
         text2: 'Vui lòng nhập dữ liệu',
       });
+      return;
     }
 
     try {

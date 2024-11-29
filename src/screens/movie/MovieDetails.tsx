@@ -13,13 +13,13 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import WebView from 'react-native-webview';
 import {Container, TextComponent} from '../../components';
+import Input from '../../components/InputComponent';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {Movie, MovieLikes, MoviesInfo, Reviews} from '../../constants/models';
 import {sizes} from '../../constants/sizes';
 import {getSpecificMovieDetails} from '../../lib/actions';
 import {parseTime} from '../../utils/helpers';
-import Input from '../../components/InputComponent';
 
 const MovieDetails = ({navigation, route}: any) => {
   const [moviesInfo, setMoviesInfo] = useState<MoviesInfo[]>([]);
@@ -435,7 +435,7 @@ const MovieDetails = ({navigation, route}: any) => {
 
             <Row alignItems="center" styles={{flexDirection: 'column', gap: 2}}>
               <TouchableOpacity onPress={handleShare}>
-                <FontAwesome name="send" size={30} color={colors.white} />
+                <Entypo name="share" size={30} color={colors.white} />
               </TouchableOpacity>
               <TextComponent
                 size={sizes.text}

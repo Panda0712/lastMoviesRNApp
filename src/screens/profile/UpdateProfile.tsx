@@ -22,6 +22,14 @@ interface UserProps {
   phoneNumber?: string;
   gender?: string;
   birthday?: string;
+  photoUrl?: string;
+}
+
+interface Params {
+  infor?: string;
+  title?: string;
+  userId?: string;
+  userData?: UserProps;
 }
 
 const UpdateProfile = ({navigation}: any) => {
@@ -43,6 +51,25 @@ const UpdateProfile = ({navigation}: any) => {
   };
 
   const handleUpdateGender = async (value: string) => {
+    if (!userData) {
+      try {
+        const data = {
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+          emailVerified: user.emailVerified,
+          photoUrl: user.photoURL,
+          creationTime: user.metadata.creationTime,
+          lastSignInTime: user.metadata.lastSignInTime,
+        };
+
+        await firestore().collection('users').doc(user.uid).set(data);
+
+        console.log('User created');
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     try {
       await firestore().collection('users').doc(userId).update({gender: value});
 
@@ -63,7 +90,7 @@ const UpdateProfile = ({navigation}: any) => {
     }
   };
 
-  const handlePassword = async () => {
+  const handlePassword = async (url: string, params: Params) => {
     if (!userData) {
       try {
         const data = {
@@ -83,10 +110,29 @@ const UpdateProfile = ({navigation}: any) => {
       }
     }
 
-    navigation.navigate('PasswordScreen');
+    navigation.navigate(url, params);
   };
 
   const handleUpdateBirthday = async (date: string) => {
+    if (!userData) {
+      try {
+        const data = {
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+          emailVerified: user.emailVerified,
+          photoUrl: user.photoURL,
+          creationTime: user.metadata.creationTime,
+          lastSignInTime: user.metadata.lastSignInTime,
+        };
+
+        await firestore().collection('users').doc(user.uid).set(data);
+
+        console.log('User created');
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     try {
       await firestore()
         .collection('users')
@@ -113,8 +159,6 @@ const UpdateProfile = ({navigation}: any) => {
   useEffect(() => {
     handleCheckUser();
   }, []);
-
-  console.log(userData);
 
   return (
     <Container
@@ -156,7 +200,7 @@ const UpdateProfile = ({navigation}: any) => {
 
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('UpdateScreen', {
+                handlePassword('UpdateScreen', {
                   infor: 'displayName',
                   title: 'tên người dùng',
                   userId,
@@ -204,36 +248,41 @@ const UpdateProfile = ({navigation}: any) => {
 
           <Space height={12} />
 
-          <Row styles={{width: '100%'}} justifyContent="space-between">
-            <Row>
-              <MaterialIcons
-                name="password"
-                size={sizes.icon}
-                color={colors.white}
-              />
-              <Space width={8} />
-              <TextComponent
-                text="Mật khẩu"
-                size={sizes.bigTitle}
-                color={colors.white}
-              />
-            </Row>
-            <TouchableOpacity onPress={() => handlePassword()}>
+          {userData?.photoUrl ? (
+            <></>
+          ) : (
+            <Row styles={{width: '100%'}} justifyContent="space-between">
               <Row>
-                <TextComponent
-                  text="Cập nhật"
-                  color={colors.yellow3}
-                  size={sizes.bigTitle}
-                />
-                <Space width={4} />
-                <Entypo
-                  name="chevron-right"
+                <MaterialIcons
+                  name="password"
                   size={sizes.icon}
-                  color={colors.yellow3}
+                  color={colors.white}
+                />
+                <Space width={8} />
+                <TextComponent
+                  text="Mật khẩu"
+                  size={sizes.bigTitle}
+                  color={colors.white}
                 />
               </Row>
-            </TouchableOpacity>
-          </Row>
+              <TouchableOpacity
+                onPress={() => handlePassword('PasswordScreen', {})}>
+                <Row>
+                  <TextComponent
+                    text="Cập nhật"
+                    color={colors.yellow3}
+                    size={sizes.bigTitle}
+                  />
+                  <Space width={4} />
+                  <Entypo
+                    name="chevron-right"
+                    size={sizes.icon}
+                    color={colors.yellow3}
+                  />
+                </Row>
+              </TouchableOpacity>
+            </Row>
+          )}
 
           <Space height={12} />
 
@@ -253,7 +302,7 @@ const UpdateProfile = ({navigation}: any) => {
             </Row>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('UpdateScreen', {
+                handlePassword('UpdateScreen', {
                   infor: 'phoneNumber',
                   title: 'Số điện thoại',
                   userId,

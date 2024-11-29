@@ -41,7 +41,7 @@ const CategoryFilmScreen = ({navigation}: any) => {
                 source={require('../../assets/images/clapboard.png')}
                 width={50}
                 height={50}
-                style={{width: 25, height: 25}}
+                style={{width: 30, height: 30}}
               />
               <Space width={6} />
               <TextComponent
