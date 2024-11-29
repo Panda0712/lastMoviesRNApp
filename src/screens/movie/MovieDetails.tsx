@@ -355,7 +355,7 @@ const MovieDetails = ({navigation, route}: any) => {
           }
           title="Xem ngay"
           onPress={() => {
-            handleWatchNow(listEpisodes[0]?.embed);
+            handleWatchNow(listEpisodes[0]?.embed ?? '');
             setActiveEpisode('Tập 1');
           }}
         />
