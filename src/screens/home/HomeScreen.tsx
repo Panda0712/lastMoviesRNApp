@@ -149,7 +149,7 @@ const HomeScreen = ({navigation}: any) => {
 
   const renderSection = useCallback(
     (title: string, slug: string, index: number, poster: boolean = false) =>
-      poster ? (
+      poster && homeMovies[index] ? (
         <Carousel
           key={index}
           containerCustomStyle={{

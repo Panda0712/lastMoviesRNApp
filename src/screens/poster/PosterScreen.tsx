@@ -59,12 +59,17 @@ const PosterScreen = ({navigation}: any) => {
             </Row>
           </TouchableOpacity>
         </Section>
-        <ImageBackground
-          source={{uri: posterMovie?.thumb_url}}
-          width={200}
-          height={200}
-          resizeMode="cover"
-          style={{width: sizes.width, height: sizes.height}}></ImageBackground>
+        {posterMovie && (
+          <ImageBackground
+            source={{uri: posterMovie?.thumb_url}}
+            width={200}
+            height={200}
+            resizeMode="cover"
+            style={{
+              width: sizes.width,
+              height: sizes.height,
+            }}></ImageBackground>
+        )}
         <Section
           styles={{position: 'absolute', bottom: 30, right: 4, zIndex: 100}}>
           <Row

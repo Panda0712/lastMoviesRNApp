@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Row, Section, Space} from '@bsdaoquang/rncomponent';
-import {FlatList, TouchableOpacity} from 'react-native';
+import {FlatList, Image, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Container, TextComponent} from '../../components';
-import {category, countries, years} from '../../constants/category';
+import {category, countries, flagImages, years} from '../../constants/category';
 import {colors} from '../../constants/colors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {sizes} from '../../constants/sizes';
@@ -37,7 +37,12 @@ const CategoryFilmScreen = ({navigation}: any) => {
                 borderBottomWidth: 1,
                 marginRight: index === category.length - 1 ? 0 : 12,
               }}>
-              <TextComponent text="🎬" />
+              <Image
+                source={require('../../assets/images/clapboard.png')}
+                width={50}
+                height={50}
+                style={{width: 25, height: 25}}
+              />
               <Space width={6} />
               <TextComponent
                 font={fontFamilies.firaMedium}
@@ -80,10 +85,15 @@ const CategoryFilmScreen = ({navigation}: any) => {
               styles={{
                 borderBottomColor: colors.black2,
                 borderBottomWidth: 1,
-                marginRight: index === category.length - 1 ? 0 : 12,
+                marginRight: index === category.length - 1 ? 0 : 20,
               }}>
-              <TextComponent text="🚩" />
-              <Space width={6} />
+              <Image
+                source={flagImages[item.imageKey]}
+                width={50}
+                height={50}
+                style={{width: 30, height: 30}}
+              />
+              <Space width={10} />
               <TextComponent
                 font={fontFamilies.firaMedium}
                 size={sizes.title}
@@ -144,7 +154,12 @@ const CategoryFilmScreen = ({navigation}: any) => {
                   borderBottomWidth: 1,
                   marginRight: index === category.length - 1 ? 0 : 12,
                 }}>
-                <TextComponent text="🗓️" />
+                <Image
+                  source={require('../../assets/images/schedule.png')}
+                  width={50}
+                  height={50}
+                  style={{width: 30, height: 30}}
+                />
                 <Space width={6} />
                 <TextComponent
                   font={fontFamilies.firaMedium}
